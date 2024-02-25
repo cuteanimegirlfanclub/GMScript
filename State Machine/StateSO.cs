@@ -1,11 +1,12 @@
 using UnityEngine;
 using System;
+using GMEngine.Prototype;
 
 namespace GMEngine
 {
     //need to be development
     [CreateAssetMenu(fileName = "State", menuName = "Scriptable Object/StateMachine/State")]
-    public class StateSO : ScriptableObject
+    public class StateSO : ScriptableObject, IPrototype<StateSO>
     {
         [Header("Behaviours")]
         public BehaviourSO[] updateBehaviours;
@@ -23,25 +24,26 @@ namespace GMEngine
         /// per frame state check & persitent behaviour execute
         /// </summary>
         /// <param name="controller"></param>
-        public void UpdateState(StateMachineController controller)
+        public void UpdateState(StateMachineWrapper controller)
         {
             CheckTransitions(controller);
             UpdateLoopBehaviour(controller);
         }
 
-        public void PhysicsUpdate(StateMachineController controller)
+        public void PhysicsUpdate(StateMachineWrapper controller)
         {
             PhysicsLoopBehaviour(controller);
         }
         
-        public void UpdateLoopBehaviour(StateMachineController controller)
+        public void UpdateLoopBehaviour(StateMachineWrapper controller)
         {
             foreach (var behaviour in updateBehaviours)
             {
                 ExecuteBehaviours(controller, behaviour);
             }
         }
-        public void PhysicsLoopBehaviour(StateMachineController controller)
+
+        public void PhysicsLoopBehaviour(StateMachineWrapper controller)
         {
             foreach (var behaviour in physicsBehaviours)
             {
@@ -49,7 +51,7 @@ namespace GMEngine
             }
         }
 
-        public void OnStateEnter(StateMachineController controller)
+        public void OnStateEnter(StateMachineWrapper controller)
         {
             foreach (var behaviour in enterStateBehaviours)
             {
@@ -61,7 +63,7 @@ namespace GMEngine
                 behaviour.Execute(controller, true);
             }
         }
-        public void OnStateExit(StateMachineController controller)
+        public void OnStateExit(StateMachineWrapper controller)
         { 
             foreach (var behaviour in exitStateBehaviours)
             {
@@ -74,12 +76,12 @@ namespace GMEngine
             }
         }
 
-        private void ExecuteBehaviours(StateMachineController controller, BehaviourSO behaviour)
+        private void ExecuteBehaviours(StateMachineWrapper controller, BehaviourSO behaviour)
         {
             behaviour.Execute(controller);
         }
 
-        private void CheckTransitions(StateMachineController controller)
+        private void CheckTransitions(StateMachineWrapper controller)
         {
             foreach (Transition transition in transitions)
             {
@@ -89,6 +91,11 @@ namespace GMEngine
                     controller.SetState(transition.toState);
                 }
             }
+        }
+
+        public StateSO DeepCopy()
+        {
+            throw new NotImplementedException();
         }
     }
 

@@ -12,7 +12,7 @@ namespace GMEngine.GameObjectExtension
             gameObject.SendMessage("FactoryReset");
         }
 
-        public static int GetActiveChildCount(this GameObject gameObject)
+        public static int ActiveChildCount(this GameObject gameObject)
         {
             int activeChildCount = 0;
             foreach (GameObject child in gameObject.transform)
@@ -23,6 +23,11 @@ namespace GMEngine.GameObjectExtension
                 }
             }
             return activeChildCount;
+        }
+
+        public static void ItemGOBehaviour(this GameObject gameObject, bool key)
+        {
+            gameObject.GetComponent<ItemBehaviour>().enabled = key;
         }
     }
 }

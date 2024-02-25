@@ -1,30 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace GMEngine.Event
 {
-    public abstract class GameEvent : ScriptableObject
+    public abstract class GameEvent<T> : ScriptableObject
     {
-        private List<IEventListener> listeners = new List<IEventListener>();
+        protected List<T> listeners = new List<T>();
 
-        public void Raise()
+        public void RegisterListener(T listener)
         {
-            for (int i = listeners.Count - 1; i >= 0; i--)
-            {
-                listeners[i].OnEventRaised();
-            }
-        }
-
-        public void RegisterListener(IEventListener listener)
-        {
+            if(listeners.Contains(listener)) return;
             listeners.Add(listener);
         }
 
-        public void UnregisterListener(IEventListener listener)
+        public void UnregisterListener(T listener)
         {
             listeners.Remove(listener);
         }
-    }
 
+        public void ClearListener()
+        {
+            listeners.Clear();
+        }
+    }
 }
 

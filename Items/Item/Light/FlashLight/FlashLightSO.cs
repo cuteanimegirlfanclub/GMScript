@@ -1,78 +1,62 @@
 using GMEngine.Value;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace GMEngine
 {
     [CreateAssetMenu(menuName = "Scriptable Object/Items/FlashLightSO")]
     public class FlashLightSO : SingleItemSO
     {
-        public float currentCharge = 10f;
-
-        public SimpleLoopTimerSO chargeTimer;
-
-        public AnimatorSO animator;
+        public FloatVariable currentCharge;
 
         public override void SetAsHandItem(InventorySO inventory)
         {
-            inventory.handItem.OnUnregisterHandItem();
+            inventory.handItem.OnUnregisterHandItem(inventory);
             inventory.handItem = this;
-            inventory.handItem.OnRegisterHandItem();
+            inventory.handItem.OnRegisterHandItem(inventory);
         }
 
-        public override void OnRegisterHandItem()
+        public override void OnRegisterHandItem(InventorySO inventory)
         {
-            if (action == null) { Debug.Log("null"); }
-            action.canceled += ActionHanlder;
-            action.Enable();
-            animator.SetAnimatorParameter("isHolding", true);
+            //if (action == null) { Debug.Log("null"); }
+            //action.canceled += ActionHanlder;
+            //action.Enable();
+            inventory.animator.SetAnimatorParameter("isHolding", true);
+
+            if(gameObjectReference != null)
+            {
+                gameObjectReference.GetComponent<ItemBehaviour>().enabled = true;
+            }
         }
 
-        public override void OnUnregisterHandItem()
+        public override void OnUnregisterHandItem(InventorySO inventory)
         {
-            action.canceled -= ActionHanlder;
-            action.Disable();
-            animator.SetAnimatorParameter("isHolding", false);
+            //action.canceled -= ActionHanlder;
+            //action.Disable();
             //SetDefault();
             //gameObjectReference.GetComponent<BaseItemMono>().SetInventoryPosition();
-        }
 
-        public void ActionHanlder(InputAction.CallbackContext context)
-        {
-            ControlFlashLight();
-        }
-
-        public void ControlFlashLight()
-        {
-            //need a spawner
-            //var light = prefab.gameObject....
-            var light = FindObjectOfType<BaseItemMono>().gameObject.GetComponentInChildren<LightController>();
-            light.OpenAndClose();
-        }
-
-        public void OpenAndClose(bool key)
-        {
-            LightController light = FindObjectOfType<BaseItemMono>().gameObject.GetComponentInChildren<LightController>();
-            light.OpenAndClose(key);
+            inventory.animator.SetAnimatorParameter("isHolding", false);
+            if (gameObjectReference != null)
+            {
+                gameObjectReference.GetComponent<ItemBehaviour>().enabled = false;
+            }
         }
 
         public override void SetDefault()
         {
-            LightController light = FindObjectOfType<BaseItemMono>().gameObject.GetComponentInChildren<LightController>();
+            LightController light = gameObjectReference.GetComponentInChildren<LightController>();
             light.OpenAndClose(false);
         }
 
-        public override void WriteSpecial(SaveDataWriter writer)
+        public override byte[] BufferSOData()
         {
-            writer.Write(currentCharge);
+            return BitConverter.GetBytes(currentCharge.Value);
         }
 
-        public override void ReadSpecial(SaveDataReader reader)
+        public override void GetSOData(byte[] buffer)
         {
-            reader.ReadFloat();
+            currentCharge.SetValue(BitConverter.ToSingle(buffer, 0));
         }
     }
 

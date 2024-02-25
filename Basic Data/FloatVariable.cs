@@ -4,70 +4,49 @@ using UnityEngine.Events;
 
 namespace GMEngine.Value
 {
-    public abstract class BaseVariable : ScriptableObject
+    public abstract class ValueVariable<T> : ScriptableObject where T : IComparable
     {
-        public abstract void SetValue(float value);
-        public abstract float ReadValue();
+        public abstract void SetValue(T value);
 
-        public abstract float Value {get; set;}
+        public abstract T Value { get; }
     }
 
     [Serializable]
     [CreateAssetMenu(fileName = "Float Variable", menuName = "Scriptable Object/Variable/Float Variable")]
-    public class FloatVariable : ScriptableObject
+    public class FloatVariable : ValueVariable<float>
     {
         [SerializeField]
         private float value;
 
-        public float Value { get => this.value; set => this.value = value; }
+        public override float Value => value;
 
         public float ReadValue()
         {
             return value;
         }
 
-        public void SetValue(float value)
+        public override void SetValue(float value)
         {
             this.value = value;
         }
     }
 
-    public interface IValueReference
-    {
-        /// <summary>
-        /// extremely unsafe method, try not to use it!!!
-        /// </summary>
-        public BaseVariable GetVariableSO();
-    }
-
-    public interface IReadWriteValueReference : IValueReference
-    {
-        public void SetValue(float value);
-        public float ReadValue();
-    }
-
-    public interface IReadOnlyValueReference : IValueReference
-    {
-        public float ReadValue();
-    }
-
     [Serializable]
-    public class FloatReferenceRO
+    public class FloatReferenceRO : ValueReference
     {
         [SerializeField]
-        private FloatVariable Variable;
+        private FloatVariable variable;
 
-        public float constantValue;
         public bool useConstant = false;
-        public float Value => useConstant ? constantValue : Variable.Value;
-        public float ReadValue()
-        {
-            return Value;
-        }
+        public float constantValue;
+        public float Value => useConstant ? constantValue : variable.Value;
 
-        public FloatVariable GetVariableSO()
+        public override ScriptableObject GetVariableSO()
         {
-            return Variable;
+            if( useConstant ) { return null; } else
+            {
+                return variable;
+            }
         }
     }
 
@@ -75,39 +54,31 @@ namespace GMEngine.Value
     public class FloatReferenceRW
     {
         [SerializeField]
-        public FloatVariable Variable;
-        public float Value { get => Variable.Value; set => Variable.Value = value; }
-        public void SetValue(float value)
+        private FloatVariable variable;
+        public FloatVariable Variable { get 
+            {
+                if(variable == null)
+                {
+                    Debug.LogWarning($"{this.GetType()} Lack of Variables!");
+                }
+                return variable;
+            }
+            set => 
+                variable = value; }
+        public float Value { get => Variable.Value;set => Variable.SetValue(value); }
+
+        public void WriteValue(float value)
         {
             Variable.SetValue(value);
         }
+
         public float ReadValue()
         {
             return Value;
         }
-
-        public FloatVariable GetVariableSO()
-        {
-            return Variable;
-        }
     }
 
-    //[Serializable]
-    //public class FloatReferenceRWEvent
-    //{
-    //    [SerializeField]
-    //    public FloatVariable Variable;
-    //    public float Value => Variable.Value;
-
-    //    public UnityEvent onValueChangeEvent;
-    //    public void SetValue(float value)
-    //    {
-    //        Variable.Value = value;
-    //        onValueChangeEvent?.Invoke();
-    //    }
-
-    //}
-
+    [Obsolete]
     [Serializable]
     public class FloatReferenceSimpleRW
     {
@@ -147,7 +118,7 @@ namespace GMEngine.Value
         }
         #endregion
 
-        public float Value => UseConstant ? ConstantValue : Variable.ReadValue();
+        public float Value => UseConstant ? ConstantValue : Variable.Value;
 
         public void DecreaseValue(float value)
         {

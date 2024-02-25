@@ -1,8 +1,9 @@
+using UnityEditor;
 using UnityEngine;
 
 namespace GMEngine
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "Scriptable Object/Audio/Audio Manager")]
     public class AudioManager : ScriptableObject
     {
         private static string AssetName => nameof(AudioManager);
@@ -20,7 +21,7 @@ namespace GMEngine
                 s_instance = CreateInstance<AudioManager>();
 
 #if UNITY_EDITOR
-                UnityEditor.AssetDatabase.CreateAsset(s_instance, $"Assets/GMEngine/Resources/Assets/Audio/{AssetName}.asset");
+                AssetDatabase.CreateAsset(s_instance, $"Assets/GMEngine/GMResources/Audio/Resources/{AssetName}.asset");
 #endif
                 return s_instance;
             }

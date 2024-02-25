@@ -2,28 +2,27 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-
-
 
 namespace GMEngine
 {
     public class ItemFactory : ScriptableObject
     {
         private Stack<ItemSpawner> spawnerStack = new Stack<ItemSpawner>();
-        private const int MaxSpawners = 10;
+        private const int MaxSpawners = 10; 
+        private readonly object spawnerLock = new object();
+
 
         public async UniTask<GameObject> CreateItemFromSOAsync(string itemSOName, Vector3 position, Quaternion rotation)
         {
             string name = ConvertSOToGO(itemSOName);
-
             AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(name);
-            await handle.Task;
+            await handle.ToUniTask();
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 ItemSpawner spawner = GetSpawner();
                 spawner.InstantiateItem(handle.Result, position, rotation);
+                Debug.Log($"Item {handle.Result} Creation Succeed");
                 return handle.Result;
             }
             else
@@ -41,18 +40,21 @@ namespace GMEngine
 
         private ItemSpawner GetSpawner()
         {
-            if (spawnerStack.Count > 0)
+            lock (spawnerLock)
             {
-                return spawnerStack.Pop();
-            }
+                if (spawnerStack.Count > 0)
+                {
+                    return spawnerStack.Pop();
+                }
 
-            if (spawnerStack.Count < MaxSpawners)
-            {
-                ItemSpawner newSpawner = new ItemSpawner();
-                return newSpawner;
-            }
+                if (spawnerStack.Count < MaxSpawners)
+                {
+                    ItemSpawner newSpawner = new ItemSpawner();
+                    return newSpawner;
+                }
 
-            return null;
+                return null;
+            }
         }
 
         public void PoolSpawner(ItemSpawner spawner)

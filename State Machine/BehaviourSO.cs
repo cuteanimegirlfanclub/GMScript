@@ -7,16 +7,11 @@ namespace GMEngine
 {
     public abstract class BehaviourSO : ScriptableObject
     {
-        public abstract void Execute(StateMachineController controller);
+        public abstract void Execute(StateMachineWrapper controller);
     }
 
     public abstract class StateTriggerBehaviourSO : ScriptableObject
     {
-        public abstract void Execute(StateMachineController controller, bool key);
-    }
-
-    public abstract class InputBehaviourSO : ScriptableObject
-    {
-        public abstract void BindBehaviour(InputAction.CallbackContext context);
+        public abstract void Execute(StateMachineWrapper controller, bool key);
     }
 }

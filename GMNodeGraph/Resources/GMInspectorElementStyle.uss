@@ -1,0 +1,35 @@
+.unity-inspector-element {
+    align-self: flex-start;
+    align-items: flex-start;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.unity-inspector-element .unity-list-view__footer {
+    align-self: flex-start;
+}
+
+#unity-list-view__size-field {
+    display: none;
+    visibility: hidden;
+}
+
+.unity-list-view {
+    flex-direction: row-reverse;
+    align-items: auto;
+    max-width: none;
+}
+
+.unity-base-field__label {
+    max-width: 50px;
+    min-width: 25px;
+}
+
+.unity-object-field-display {
+    max-width: 150px;
+}
+
+.unity-float-field {
+    flex-direction: column;
+    align-items: auto;
+}

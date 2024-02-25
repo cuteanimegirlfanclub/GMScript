@@ -6,7 +6,6 @@ namespace GMEngine
 {
     public abstract class Detector
     {
-        public Knowledge knowledge;
         public int scanFrequency;
         public LayerMask layers;
         public LayerMask occulusionLayers;

@@ -1,8 +1,9 @@
 using UnityEngine;
 using GMEngine.Value;
 using GMEngine;
+using Cysharp.Threading.Tasks;
 
-public class PlayerManager : MonoBehaviour, ISaveDataSender, ISaveDataRecevier
+public class PlayerManager : Singleton<PlayerManager>, IGameDataSender, ISaveDataRecevier
 {
     public GameObject playerPrefab;
 
@@ -15,9 +16,14 @@ public class PlayerManager : MonoBehaviour, ISaveDataSender, ISaveDataRecevier
     public FloatReferenceRW playerCurrentMental;
     public FloatReferenceRW playerCurrentHealth;
 
-    private void Awake()
+    protected override void OnAwake()
     {
         InitializePlayer();
+    }
+
+    private void OnEnable()
+    {
+        RegisterStroage();
     }
 
     public void InitializePlayer()
@@ -29,14 +35,12 @@ public class PlayerManager : MonoBehaviour, ISaveDataSender, ISaveDataRecevier
         {
             SetupStatus();
             SetupBasicInventory();
-            RegisterStroage();
             return;
         }
 #endif
         Instantiate(playerPrefab);
         SetupStatus();
         SetupBasicInventory();
-        RegisterStroage();
     }
 
     private void SetupBasicInventory()
@@ -48,15 +52,15 @@ public class PlayerManager : MonoBehaviour, ISaveDataSender, ISaveDataRecevier
 
     private void SetupStatus()
     {
-        playerCurrentHealth.SetValue(playerMaxHealth.Value);
-        playerCurrentMental.SetValue(playerMaxMental.Value);
+        playerCurrentHealth.WriteValue(playerMaxHealth.Value);
+        playerCurrentMental.WriteValue(playerMaxMental.Value);
     }
 
     private void RegisterStroage()
     {
         SimpleStroage stroage = GameManager.Instance.GetComponent<SimpleStroage>();
-        stroage.OnPullDataRequest += SendData;
-        stroage.OnReceiveDataRequest += ReceiveData;
+        stroage.SendGameDataEvt.RegisterListener(this); 
+        stroage.ReceiveDataEvt.RegisterListener(this);
     }
 
     public void SendData(SaveData data)
@@ -86,7 +90,7 @@ public class PlayerManager : MonoBehaviour, ISaveDataSender, ISaveDataRecevier
         }
     }
 
-    public void ReceiveData(SaveData data)
+    public async UniTask ReceiveData(SaveData data)
     {
         Debug.Log("Receiving Player Data...");
         //disable some component for receiving data...
@@ -105,28 +109,26 @@ public class PlayerManager : MonoBehaviour, ISaveDataSender, ISaveDataRecevier
         {
             Vector3 inventoryPosition = new Vector3(0, -5, 0);
 
-            BaseItemSO itemSO = data.UnPackToGameData(item);
-            itemSO.name = item.name;
-            playerInventory.AddItem(itemSO);
-
-            if(itemSO.gameObjectReference == null)
-            {
-                ItemManager.Instance.CreateItem(item.name, inventoryPosition, Quaternion.identity);
-            }
-            
+            Debug.Log($"{name} trying to create {item.itemName}");
+            GameObject go = await ItemManager.Instance.CreateItemAsync(item.itemName, inventoryPosition, Quaternion.identity);
+            go.GetComponent<PickableItem>().baseItemSO.GetSOData(item.itemDataBuffer);
+            go.GetComponent<PickableItem>().DisablePickable();
+            playerInventory.AddItem(go.GetComponent<PickableItem>().baseItemSO);
         }
 
-        //if(data.handItemNum != -1)
-        //{
-        //    BaseItemSO handItemSO = playerInventory.items[data.handItemNum];
-        //    playerInventory.SetHandItem(handItemSO);
-        //}
+        if (data.handItemNum != -1)
+        {
+            BaseItemSO handItemSO = playerInventory.items[data.handItemNum];
+            Debug.Log(handItemSO.name);
+            playerReference.GetComponentInChildren<PlayerKnowledge>().SetSelectingItem(handItemSO.gameObjectReference);
+            playerInventory.SetHandItem(handItemSO);
+        }
 
 
         //enable
         playerReference.GetComponent<Animator>().enabled = true;
         playerReference.GetComponent<CharacterController>().enabled = true;
-    }
 
+    }
 
 }

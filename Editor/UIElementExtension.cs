@@ -55,7 +55,7 @@ namespace GMEngine.Editor.UI
         {
             if (element == null)
             {
-                Debug.LogError("VisualElement is null. Cannot add a button to a null VisualElement.");
+                Debug.LogError("VisualElement is null.");
             }
             return element;
         }

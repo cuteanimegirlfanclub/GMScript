@@ -18,7 +18,7 @@ namespace GMEngine
             Minus
         }
 
-        public override void Execute(StateMachineController controller)
+        public override void Execute(StateMachineWrapper controller)
         {
             if (modifyType == ModifyType.Add)
             {
@@ -32,13 +32,13 @@ namespace GMEngine
 
         public void AddValue()
         {
-            if (valueToModify.Value >= limitValue.Value) { valueToModify.SetValue(limitValue.Value); return; }
-            valueToModify.SetValue(valueToModify.Value + modifyValue.Value);
+            if (valueToModify.Value >= limitValue.Value) { valueToModify.WriteValue(limitValue.Value); return; }
+            valueToModify.WriteValue(valueToModify.Value + modifyValue.Value);
         }
         public void MinusValue()
         {
-            if (valueToModify.Value <= limitValue.Value) { valueToModify.SetValue(limitValue.Value); return; }
-            valueToModify.SetValue(valueToModify.Value - modifyValue.Value);
+            if (valueToModify.Value <= limitValue.Value) { valueToModify.WriteValue(limitValue.Value); return; }
+            valueToModify.WriteValue(valueToModify.Value - modifyValue.Value);
         }
     }
 

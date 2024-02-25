@@ -3,21 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace GMEngine{
-    public abstract class Knowledge : ScriptableObject
+    public interface IKnowledge
     {
-        public abstract void AddToKnowledge(Transform transform);
-        public abstract void RemoveFromKnowledge(Transform transform);
+        public void AddToKnowledge(Transform transform);
+        public void RemoveFromKnowledge(Transform transform);
 
-        public abstract bool CheckKnowledge();
+        public bool CheckKnowledge();
 
-        public abstract void ClearKonwledge();
+        public void ClearKonwledge();
 
-    }
-    public interface IKnowledgeData
-    {
-        public Transform TransformData { get; }
-        public bool isNull();
-        public void SetNull();
     }
 }
 

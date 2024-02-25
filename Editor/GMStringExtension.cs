@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace GMEngine.String.Extension
+namespace GMEngine.Editor.String.Extension
 {
     public static class GMStringExtension
     {

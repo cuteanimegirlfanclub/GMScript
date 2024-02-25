@@ -16,7 +16,6 @@ namespace GMEngine
             itemSOSlot = itemSO;
             SetupSprite(itemSO.sprite);
             SetupItemCount(itemSO);
-            Debug.Log($"{itemSOSlot.name}");
         }
 
         private void SetupItemCount(BaseItemSO itemSO) 

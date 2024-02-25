@@ -13,15 +13,15 @@ namespace GMEngine
         [SerializeField]
         FloatReferenceRO ThersholdValue;
         [SerializeField]
-        bool smallerComparision = false;
+        bool smallerThan = false;
 
-        public override bool CheckCondition(StateMachineController controller)
+        public override bool CheckCondition(StateMachineWrapper controller)
         {
-            if(smallerComparision) { return !CheckValueCondition(); }
-            else return CheckValueCondition();
+            if(smallerThan) { return !BiggerThan(); }
+            else return BiggerThan();
         }
 
-        private bool CheckValueCondition()
+        private bool BiggerThan()
         {
             return ConditionValue.Value >= ThersholdValue.Value;
         }

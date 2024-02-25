@@ -6,6 +6,7 @@ public class SaveDataEditorWindow : EditorWindow
 {
     private SaveData saveData;
 
+
     [MenuItem("GMEngine/Save Data Debuger")]
     public static void ShowWindow()
     {
@@ -23,7 +24,7 @@ public class SaveDataEditorWindow : EditorWindow
 
         if (GUILayout.Button("Open"))
         {
-            string path = EditorUtility.OpenFilePanel("Open Save Data", Application.persistentDataPath, "saveFile");
+            string path = EditorUtility.OpenFilePanel("Open Save Data", Application.persistentDataPath, "");
             if (!string.IsNullOrEmpty(path))
             {
                 saveData = LoadSaveData(path);
@@ -44,6 +45,8 @@ public class SaveDataEditorWindow : EditorWindow
             EditorGUILayout.FloatField("Player Health", saveData.playerHealth);
             EditorGUILayout.FloatField("Player Mental", saveData.playerMental);
 
+            GUILayout.Space(15);
+
             GUILayout.Label("Ground Item Data", EditorStyles.boldLabel);
             if(saveData.groundItemDatas.Count == 0)
             {
@@ -52,7 +55,7 @@ public class SaveDataEditorWindow : EditorWindow
 
             foreach (var itemData in saveData.groundItemDatas)
             {
-                EditorGUILayout.LabelField("Name: " + itemData.name);
+                EditorGUILayout.LabelField("Name: " + itemData.itemName);
                 EditorGUILayout.ObjectField("Base Item SO", itemData.baseItemSO, typeof(BaseItemSO), false);
                 EditorGUILayout.Vector3Field("Position", itemData.position);
                 //EditorGUILayout.QuaternionField("Rotation", itemData.rotation);
@@ -63,6 +66,8 @@ public class SaveDataEditorWindow : EditorWindow
                 }
             }
 
+            GUILayout.Space(15);
+
             GUILayout.Label("Inventory Item Data", EditorStyles.boldLabel);
             if (saveData.inventoryItemDatas.Count == 0)
             {
@@ -70,11 +75,14 @@ public class SaveDataEditorWindow : EditorWindow
             }
             foreach (var itemData in saveData.inventoryItemDatas)
             {
-                EditorGUILayout.LabelField("Name: " + itemData.name);
+                EditorGUILayout.LabelField("Name: " + itemData.itemName);
                 EditorGUILayout.ObjectField("Base Item SO", itemData.baseItemSO, typeof(BaseItemSO), false);
             }
 
-            EditorGUILayout.IntField("Hand Item Number", saveData.handItemNum);
+            if (saveData.inventoryItemDatas.Count != 0)
+            {
+                EditorGUILayout.IntField("Hand Item Number", saveData.handItemNum);
+            }
         }
     }
 

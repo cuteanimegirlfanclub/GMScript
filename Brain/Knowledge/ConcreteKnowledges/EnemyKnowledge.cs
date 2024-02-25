@@ -4,29 +4,28 @@ using UnityEngine;
 
 namespace GMEngine
 {
-    [CreateAssetMenu(menuName = "Scriptable Object/Knowledge/Enemy Knowledge")]
-    public class EnemyKnowledge : Knowledge
+    public class EnemyKnowledge : MonoBehaviour, IKnowledge
     {
         public List<Transform> knowledges;
 
-        public override void AddToKnowledge(Transform transform)
+        public void AddToKnowledge(Transform transform)
         {
             if (knowledges.Contains(transform)) return;
             knowledges.Add(transform);
         }
 
-        public override void RemoveFromKnowledge(Transform transform)
+        public void RemoveFromKnowledge(Transform transform)
         {
             if (knowledges.Contains(transform)) knowledges.Remove(transform);
             else return;
         }
 
-        public override void ClearKonwledge()
+        public void ClearKonwledge()
         {
             knowledges.Clear();
         }
 
-        public override bool CheckKnowledge()
+        public bool CheckKnowledge()
         {
             return knowledges.Count > 0;
         }

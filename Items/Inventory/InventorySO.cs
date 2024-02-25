@@ -15,6 +15,7 @@ namespace GMEngine
 
         public event Action<BaseItemSO> OnItemAdded;
         public event Action<BaseItemSO, int> OnItemRemoved;
+        public AnimatorSO animator;
 
         private void OnEnable()
         {
@@ -29,7 +30,8 @@ namespace GMEngine
         public void AddItem(BaseItemSO item)
         {
             item.AddToInventory(this);
-            OnItemAdded?.Invoke(item);
+            
+            //OnItemAdded?.Invoke(item);
         }
 
         public void RemoveItem(BaseItemSO item)
@@ -42,6 +44,11 @@ namespace GMEngine
         {
             if (handItem == item) return;
             item.SetAsHandItem(this);
+        }
+
+        public void InvokeOnItenAddedEvent(BaseItemSO item)
+        {
+            OnItemAdded?.Invoke(item);
         }
     }
 }

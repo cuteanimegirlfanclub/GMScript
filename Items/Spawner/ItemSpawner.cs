@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 
 namespace GMEngine
 {
@@ -13,8 +12,10 @@ namespace GMEngine
         public void InstantiateItem(GameObject prefab,Vector3 position, Quaternion rotaion)
         {
             itemPrefab = prefab;
+            //itemGO = ItemManager.Instance.CreateItemAsync(prefab.name, position, rotaion).GetAwaiter().GetResult();
             itemGO = GameObject.Instantiate(itemPrefab,position, rotaion);
-            itemGO.GetComponent<BaseItemMono>().baseItemSO.gameObjectReference = itemGO;
+
+            itemGO.GetComponentInChildren<PickableItem>().baseItemSO.gameObjectReference = itemGO;
         }
 
         public void Dispose()

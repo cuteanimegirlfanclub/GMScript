@@ -7,7 +7,7 @@ using GMEngine;
 public class DebugBehaviour : BehaviourSO
 {
     public string message;
-    public override void Execute(StateMachineController controller)
+    public override void Execute(StateMachineWrapper controller)
     {
         Debug.Log(controller.name + "says" + message);
     }

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 using GMEngine.Value;
+using GMEngine.UI;
 
 namespace GMEngine
 {
@@ -11,6 +12,7 @@ namespace GMEngine
         //change into InputSO or Standard InputAsset later
         public InputAction pickEquipAction;
         public InputAction dropAction;
+        public DialogueDisplayer displayer;
 
         [Header("Action Timer")]
         public SimpleTimerSO pickEquipTimer;
@@ -29,10 +31,12 @@ namespace GMEngine
         //c# event
         public event EventHandler<Transform> OnEquipItem;
 
-        [Header("Inventory and Knowledge")]
+        [Header("Inventory")]
         //we need to store the konwledge for ui usage
-        public PlayerKnowledge knowledge;
         public InventorySO inventory;
+        [Header("Cache")]
+        public PlayerKnowledge knowledge;
+
 
         private void OnEnable()
         {
@@ -41,6 +45,8 @@ namespace GMEngine
             pickEquipAction.canceled += PickEquipItemAction;
 
             dropAction.Enable(); dropAction.canceled += DropItemAction;
+
+            displayer.DisplayDialogue("trying to use the dialogue displayer to show dialogue");
         }
 
         private void OnDisable()
@@ -77,14 +83,14 @@ namespace GMEngine
         public void PickItem()
         {
             if (!knowledge.haveGrabbleItem()) return;
-            inventory.AddItem(knowledge.grabbleItem.GetComponent<BaseItemMono>().baseItemSO);
+            inventory.AddItem(knowledge.grabbleItem.GetComponent<PickableItem>().baseItemSO);
             OnPickingItem?.Raise();
         }
 
         public void EquipItem()
         {
             //play the animation and will trigger the animation event
-            inventory.SetHandItem(knowledge.GetSelectingItem().GetComponent<BaseItemMono>().baseItemSO);
+            inventory.SetHandItem(knowledge.GetSelectingItem().GetComponent<PickableItem>().baseItemSO);
 
             OnEquipItem?.Invoke(this, transform);
         }
@@ -117,7 +123,7 @@ namespace GMEngine
             knowledge.SetSelectingItem(itemToDrop);
             inventory.SetHandItem(inventory.items[0]);
             animator.SetAnimatorParameter("OnDrop");
-            inventory.RemoveItem(itemToDrop.GetComponent<BaseItemMono>().baseItemSO);
+            inventory.RemoveItem(itemToDrop.GetComponent<PickableItem>().baseItemSO);
         }
 
         /// <summary>
@@ -137,7 +143,7 @@ namespace GMEngine
         public void ThrowItemHandler()
         {
             GameObject itemToDrop = knowledge.GetSelectingItem();
-            itemToDrop.GetComponent<BaseItemMono>().DropToGround();
+            itemToDrop.GetComponent<PickableItem>().DropToGround();
         }
     }
 }

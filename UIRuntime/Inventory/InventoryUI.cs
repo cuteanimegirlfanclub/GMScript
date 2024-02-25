@@ -32,8 +32,20 @@ namespace GMEngine
 
         private void Awake()
         {
+            inventorySO.OnItemAdded += AppendItemSlot;
+            inventorySO.OnItemRemoved += RemoveItemSlot;
+        }
+
+        private void Start()
+        {
             //the initialization should be after the player
-            //InitiateInventoryUI(inventorySO);
+            InitiateInventoryUI(inventorySO);
+        }
+
+        private void OnDestroy()
+        {
+            inventorySO.OnItemAdded -= AppendItemSlot;
+            inventorySO.OnItemRemoved -= RemoveItemSlot;
         }
 
         public void InitiateInventoryUI(InventorySO inventory)
@@ -46,14 +58,14 @@ namespace GMEngine
 
             FillInventoryUI(inventory);
 
-            inventorySO.OnItemAdded += AppendItemSlot;
-            inventorySO.OnItemRemoved += RemoveItemSlot;
         }
+
+
 
         private void InitiateSlotFactory()
         {
             factory = FindAnyObjectByType<GameObjectFactory>();
-            if (factory == null || factory.gameObjectPrefab != itemSlotPrefab);
+            if (factory == null || factory.gameObjectPrefab != itemSlotPrefab)
             {
                 factory = ScriptableObject.CreateInstance<GameObjectFactory>();
                 factory.name = itemSlotPrefab.name;

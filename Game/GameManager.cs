@@ -1,57 +1,35 @@
+using GMEngine.UI;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace GMEngine
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : Singleton<GameManager>
     {
-        private static GameManager _instance;
-        public static GameManager Instance
+        public bool isPause;
+
+        protected override void OnAwake()
         {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = FindObjectOfType<GameManager>();
-
-                    if (_instance == null)
-                    {
-                        GameObject go = new GameObject("GameManager");
-                        _instance = go.AddComponent<GameManager>();
-                        go.AddComponent<SimpleStroage>();
-                        go.tag = "Manager";
-                    }
-                }
-                return _instance;
-            }
-        }
-        public bool IsPause { get; private set; }
-
-        private void Awake()
-        {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            DontDestroyOnLoad(gameObject);
+            //gameObject.AddComponent<SimpleStroage>();
+            //gameObject.AddComponent<LifeCycleTracker>();
         }
 
 
         public void PauseGame()
         {
-            if(!IsPause) { Time.timeScale = 0; IsPause = true; }
+            if(!isPause) { Time.timeScale = 0; isPause = true; }
         }
 
         public void ResumeGame()
         {
-            if (IsPause) { Time.timeScale = 1; IsPause = false; }
+            if (isPause) { Time.timeScale = 1; isPause = false; }
         }
 
         public void PauseGameGate()
         {
-            if (IsPause) { ResumeGame(); }
+            if (isPause) { ResumeGame(); }
             else PauseGame();
         }
 
@@ -59,21 +37,6 @@ namespace GMEngine
         {
             if (toPause) { PauseGame(); }
             else ResumeGame();
-        }
-
-        public async void SimpleLoadGameAsync(string savePath)
-        {
-            Scene current = SceneManager.GetActiveScene();
-
-            await LevelManager.Instance.LoadScene(current.name);
-
-            GetComponent<SimpleStroage>().SimpleLoad(savePath);
-        }
-
-
-        public void ReloadGameAtSlot(int slotNumber)
-        {
-            //ReloadGame(simpleStorage.TransferSlotToPath(slotNumber));
         }
     }
 

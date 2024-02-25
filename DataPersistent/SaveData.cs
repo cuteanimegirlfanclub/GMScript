@@ -8,7 +8,6 @@ namespace GMEngine
 {
     public class SaveData : ScriptableObject, IDisposable
     {
-        //
         public int saveVersion;
 
         //Scene Data
@@ -44,7 +43,7 @@ namespace GMEngine
             Destroy(this);
         }
 
-        public void Save(SaveDataWriter writer)
+        public void Save(GameDataWriter writer)
         {
             //player Date
             sceneBuildIndex = SceneManager.GetActiveScene().buildIndex;
@@ -59,24 +58,15 @@ namespace GMEngine
             writer.Write(groundItemDatas.Count);
             foreach (var itemData in groundItemDatas)
             {
-                writer.Write(itemData.name);
-                itemData.baseItemSO.WriteSpecial(writer);
-
-                writer.Write(itemData.position);
-                writer.Write(itemData.rotation);
-
-                if (itemData.baseItemSO is StackableItemSO stackableItem)
-                {
-                    writer.Write(stackableItem.number);
-                }
+                WriteItemData(itemData, writer);
+                WriteItemPosition(itemData, writer);
             }
 
             //Inventory Data
             writer.Write(inventoryItemDatas.Count);
             foreach (var itemData in inventoryItemDatas)
             {
-                writer.Write(itemData.name);
-                itemData.baseItemSO.WriteSpecial(writer);
+                WriteItemData(itemData, writer);
             }
             writer.Write(handItemNum);
         }
@@ -99,20 +89,14 @@ namespace GMEngine
                 for (int i = 0; i < itemNum; i++)
                 {
                     string name = reader.ReadString();
-                    BaseItemSO itemSO = CreateInstance(name) as BaseItemSO;
-                    itemSO.ReadSpecial(reader);
+                    int length = reader.ReadInt();
+                    byte[] itemDataBuffer = reader.ReadBytes(length);
 
                     var itemPosition = reader.ReadVector3();
                     var itemRotation = reader.ReadQuaternion();
 
-                    if (itemSO is StackableItemSO stackableItem)
-                    {
-                        stackableItem.number = reader.ReadFloat();
-                        groundItemDatas.Add(new ItemData(name, stackableItem, itemPosition, itemRotation));
 
-                    }
-
-                    groundItemDatas.Add(new ItemData(name, itemSO, itemPosition, itemRotation));
+                    groundItemDatas.Add(new ItemData(name, itemDataBuffer, itemPosition, itemRotation));
 
                 }
             }
@@ -127,37 +111,42 @@ namespace GMEngine
                 for (int i = 0; i < inventoryNum; i++)
                 {
                     string name = reader.ReadString();
-                    BaseItemSO itemSO = ScriptableObject.CreateInstance(name) as BaseItemSO;
-                    itemSO.ReadSpecial(reader);
+                    int length = reader.ReadInt();
+                    byte[] itemDataBuffer = reader.ReadBytes(length);
 
-                    inventoryItemDatas.Add(new ItemData(name, itemSO, new Vector3(0, -5, 0), Quaternion.identity));
+
+                    inventoryItemDatas.Add(new ItemData(name,itemDataBuffer, new Vector3(0, -5, 0), Quaternion.identity));
                 }
             }
             handItemNum = reader.ReadInt();
 
         }
 
+        private void WriteItemData(ItemData itemData, GameDataWriter writer)
+        {
+
+            writer.Write(itemData.itemName);
+            writer.Write(itemData.itemDataBuffer.Length);
+            writer.Write(itemData.itemDataBuffer);
+        }
+
+        private void WriteItemPosition(ItemData itemData, GameDataWriter writer)
+        {
+            writer.Write(itemData.position);
+            writer.Write(itemData.rotation);
+        }
+
+
         public ItemData PackToSaveData(GameObject gameObject)
         {
-            var itemSO = gameObject.GetComponent<BaseItemMono>().baseItemSO;
+            var itemSO = gameObject.GetComponent<PickableItem>().baseItemSO;
             string name = itemSO.GetType().Name;
+            byte[] buffer = itemSO.BufferSOData();
             Vector3 position = gameObject.transform.position;
             quaternion rotation = gameObject.transform.rotation;
 
-            return new ItemData(name, itemSO, position, rotation);
+            return new ItemData(name, buffer, position, rotation);
         }
-
-        public BaseItemSO UnPackToGameData(ItemData itemData)
-        {
-            return itemData.baseItemSO;
-        }
-
-#if UNITY_EDITOR
-        public void LogSaveData()
-        {
-
-        }
-#endif
     }
 
     [Serializable]
@@ -167,14 +156,15 @@ namespace GMEngine
         /// <summary>
         /// In the form of SO
         /// </summary>
-        public string name;
+        public byte[] itemDataBuffer;
+        public string itemName;
         public Vector3 position;
         public Quaternion rotation;
 
-        public ItemData(string name, BaseItemSO baseItemSO, Vector3 position, Quaternion rotarion)
+        public ItemData(string name, byte[] buffer, Vector3 position, Quaternion rotarion)
         {
-            this.name = name;
-            this.baseItemSO = baseItemSO;
+            this.itemName = name;
+            this.itemDataBuffer = buffer;
             this.position = position;
             this.rotation = rotarion;
         }

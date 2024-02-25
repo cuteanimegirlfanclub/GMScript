@@ -1,3 +1,4 @@
+using GMEngine.Value;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,38 +7,50 @@ using UnityEngine;
 namespace GMEngine {
 
     [CreateAssetMenu(fileName = "Int Variable", menuName = "Scriptable Object/Variable/Int Variable")]
-    public class IntVariable : ScriptableObject, ISerializationCallbackReceiver
+    public class IntVariable : ValueVariable<int>
     {
-        public float value;
+        [SerializeField]
+        private int value;
 
-        public void OnAfterDeserialize()
-        {
-        }
+        public override int Value => value;
 
-        public void OnBeforeSerialize()
+        public override void SetValue(int value)
         {
+            this.value = value;
         }
     }
 
     [Serializable]
-    public class IntReference
+    public class IntReferenceRO
     {
         public bool UseConstant = false;
-        public float ConstantValue;
-        public IntVariable Variable;
+        public int ConstantValue;
+        [SerializeField]
+        private IntVariable variable;
+        public IntVariable Variable { get => variable; set => variable = value; }
 
-        public float Value { get => UseConstant ? ConstantValue : Variable.value; }
+        public int Value { get => UseConstant ? ConstantValue : Variable.Value; }
+    }
 
-        public float DecreaseValue(float value)
+    [Serializable]
+    public class IntReferenceRW
+    {
+        [SerializeField]
+        private IntVariable variable;
+        public IntVariable Variable { get => variable; set => variable = value; }
+        public int Value { get => Variable.Value; set => Variable.SetValue(value); }
+        public void WriteValue(int value)
         {
-            if (UseConstant) { return ConstantValue; }
-            return Variable.value -= value;
+            Variable.SetValue(value);
+        }
+        public int ReadValue()
+        {
+            return Value;
         }
 
-        public float AddValue(float value)
+        public IntVariable GetVariableSO()
         {
-            if (UseConstant) { return ConstantValue; }
-            return Variable.value += value;
+            return Variable;
         }
     }
 }

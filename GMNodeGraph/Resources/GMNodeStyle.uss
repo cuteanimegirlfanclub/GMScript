@@ -1,0 +1,83 @@
+.port {
+    align-items: flex-start;
+    justify-content: center;
+    align-self: flex-end;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0);
+    flex-basis: 100%;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.connectorText {
+    background-color: rgb(0, 0, 0);
+    top: auto;
+    width: auto;
+    height: auto;
+    min-width: auto;
+    min-height: auto;
+    justify-content: flex-end;
+    flex-basis: 0;
+    flex-shrink: 0;
+    display: none;
+}
+
+.input > .connectorBox {
+    align-self: center;
+}
+
+.output > .connectorBox {
+    align-self: center;
+}
+
+#rename {
+    position: absolute;
+    left: auto;
+    right: auto;
+    display: none;
+}
+
+#rename > .unity-label {
+    display: none;
+}
+
+#rename > #unity-text-input {
+    display: flex;
+    align-items: stretch;
+}
+
+#selection-border:hover {
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left-color: rgb(64, 255, 249);
+    border-right-color: rgb(64, 255, 249);
+    border-top-color: rgb(64, 255, 249);
+    border-bottom-color: rgb(64, 255, 249);
+    flex-grow: 1;
+    position: absolute;
+}
+
+#seleciton-border:selected {
+    border-left-color: rgb(18, 41, 255);
+    border-right-color: rgb(18, 41, 255);
+    border-top-color: rgb(18, 41, 255);
+    border-bottom-color: rgb(18, 41, 255);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    flex-grow: 1;
+    position: absolute;
+}

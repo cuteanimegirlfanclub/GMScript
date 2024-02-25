@@ -9,25 +9,32 @@ namespace GMEngine
         private Stack<GameObject> stack = new Stack<GameObject>();
         public int maxPool;
         public GameObject gameObjectPrefab;
+        private readonly object factoryLock = new object();
+
+        private int totalCreated = 0;
 
         public GameObject GetProduct(Transform parent)
         {
-            Debug.Log($"Getting Product {gameObjectPrefab.name}, Factory Now have {stack.Count} Product");
-            if (stack.Count > 0)
+            lock (factoryLock)
             {
-                Debug.Log($"Find Pooled Product {gameObjectPrefab.name}");
-                GameObject gameObject = stack.Pop();
-                gameObject.SetActive(true);
-                return gameObject;
-            }
+                Debug.Log($"Getting Product {gameObjectPrefab.name}, Factory Now have {stack.Count} Product");
+                if (stack.Count > 0)
+                {
+                    Debug.Log($"Find Pooled Product {gameObjectPrefab.name}");
+                    GameObject gameObject = stack.Pop();
+                    gameObject.SetActive(true);
+                    return gameObject;
+                }
 
-            if (stack.Count < maxPool)
-            {
-                Debug.Log($"Creating New Product {gameObjectPrefab.name}");
-                GameObject newProduct = Instantiate(gameObjectPrefab, parent);
-                return newProduct;
+                if (stack.Count < maxPool)
+                {
+                    Debug.Log($"Creating New Product {gameObjectPrefab.name} Parent is {parent}");
+                    GameObject newProduct = Instantiate(gameObjectPrefab, parent);
+                    newProduct.name = totalCreated++.ToString();
+                    return newProduct;
+                }
+                return null;
             }
-            return null;
         }
 
         public bool TryGetProduct(Transform parent, out GameObject product)

@@ -7,7 +7,7 @@ namespace GMEngine
 {
     public abstract class ConditionSO : ScriptableObject
     {
-        public abstract bool CheckCondition(StateMachineController controller);
+        public abstract bool CheckCondition(StateMachineWrapper controller);
     }
    
 }

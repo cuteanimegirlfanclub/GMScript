@@ -5,7 +5,7 @@ using UnityEditor;
 using GMEngine.Value;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using GMEngine.String.Extension;
+using GMEngine.Editor.String.Extension;
 using System;
 
 namespace GMEngine.UtilEditor
@@ -22,7 +22,6 @@ namespace GMEngine.UtilEditor
         private SerializedProperty variableSOProperty { get; set; }
         private SerializedProperty constantValueProperty { get; set; }
         private SerializedProperty useConstantBoolenProperty { get; set; }
-        private SerializedProperty variableValueProperty { get; set; }
 
         private PropertyField variableSOField { get; set; }
         private PropertyField constantValueField { get; set; }
@@ -41,9 +40,8 @@ namespace GMEngine.UtilEditor
         }
         private void FindProperties(SerializedProperty property)
         {
-            variableSOProperty = property.FindPropertyRelative("Variable");
+            variableSOProperty = property.FindPropertyRelative("variable");
             constantValueProperty = property.FindPropertyRelative("constantValue");
-            variableValueProperty = property.FindPropertyRelative("Variable/value");
 
             useConstantBoolenProperty = property.FindPropertyRelative("useConstant");
             propertyName = property.name;
@@ -75,17 +73,6 @@ namespace GMEngine.UtilEditor
             valueContainer.Add(constantValueField);
 
             variableContainer.Add(variableSOField); 
-
-            if (variableValueProperty != null)
-            {
-                var floatField = new FloatField();
-                floatField.value = variableValueProperty.floatValue;
-                floatField.RegisterValueChangedCallback((evt) =>
-                {
-                    variableValueProperty.floatValue = evt.newValue;
-                });
-                variableContainer.Add(floatField);
-            }
 
             Box.Add(propertyNameLabel);
             Box.Add(useConstantToggle);

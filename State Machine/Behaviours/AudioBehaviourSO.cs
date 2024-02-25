@@ -16,7 +16,7 @@ public class AudioBehaviourSO : BehaviourSO
         Stop
     }
 
-    public override void Execute(StateMachineController controller)
+    public override void Execute(StateMachineWrapper controller)
     {
         if(action == Action.Play)
         {
