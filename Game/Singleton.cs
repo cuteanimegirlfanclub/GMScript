@@ -12,7 +12,7 @@ namespace GMEngine
         // ReSharper disable once StaticMemberInGenericType
         private static readonly object Lock = new object();
 
-        [SerializeField]
+        [SerializeField,Tooltip("True when you need to across scene")]
         private bool _persistent = true;
         #endregion
 

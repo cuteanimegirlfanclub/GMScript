@@ -1,46 +1,50 @@
-# Project Name
+# 我的Unity基本项目包
 
-A brief description of your project.
+我为使用Unity引擎进行游戏开发而写的或正在写一些基本工具，包括：
+基于Scriptabe Object、编辑器友好的可序列化的基础数值（系统）；
+使用Mesh和Collider做的GameObject探测器和缓存器；
+用BinaryWriter做的存储系统，支持UnityEditor进行Debug和编辑；
+用Scriptable Object做的Runtime ID lookup system；
+使用UnityEditor的GraphView，可以使用编辑器操作的行为树图；
 
-## Table of Contents
+还有其他一些杂项包括：
+用SRP写的渲染管线和Unity ShaderLab&URP&RP Library写的Toon Shader（没写完）、之前用xNode做的行为树图、SO的状态机以及为演示和测试用做了一些UI和其他的东东。
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Getting Started](#getting-started)
+## 目录
+
+- [介绍](#介绍)
   - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+  - [特性](#特性)
+- [说明&使用](#说明&使用)
+  - [Basic Value](#Basic Value)
+  - [Data Persisitence](#Data Persisitence)
+  - [GMNodeGraph](#GMNodeGraph)
+  - [Addressables](#Addressables)
+  - [Brain](#Brain)
+  - [杂项](#杂项)
 
-## Introduction
+## 介绍
 
 Provide an overview of what your project does and why it's important or interesting.
-
-## Features
-
-List the key features and functionalities of your project.
-
-## Getting Started
-
-Explain how to get started with your project. Include instructions on how to install, configure, and run your software.
 
 ### Prerequisites
 
 List any software or tools that users need to install before using your project.
 
-### Installation
+### 特性
 
-Provide detailed installation instructions. This may include code snippets or commands.
+工具设计理念主要是面向对象编程的和编辑器和用户友好，希望可以实现工具间高度解耦的模块化。
 
-## Usage
+## 说明&使用
 
-Explain how to use your project. Include code examples and screenshots if applicable.
+###Basic Value
 
-## Contributing
+###Data Persisitence
 
-Explain how others can contribute to your project. Include guidelines for code contribution, bug reporting, and feature requests.
+###GMNodeGraph
 
-## License
+###Addressables
 
-This project is licensed under the [License Name] - see the [LICENSE.md](LICENSE.md) file for details.
+###Brain
+
+###杂项

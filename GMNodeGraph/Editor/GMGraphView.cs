@@ -264,8 +264,6 @@ namespace GMEngine.NodeGraph
         private void DuplicateNodes(List<GMNodeView> nodeViews)
         {
             nodeViews.ForEach(n => DuplicateNode(n));
-
-
         }
 
         private void RenameNode(GMNodeView nodeView)

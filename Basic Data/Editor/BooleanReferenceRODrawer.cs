@@ -1,17 +1,15 @@
+using GMEngine.Editor.String.Extension;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
-using GMEngine.Value;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
-using GMEngine.Editor.String.Extension;
-using System;
 
-namespace GMEngine.UtilEditor
+namespace GMEngine.Value
 {
-    [CustomPropertyDrawer(typeof(FloatReferenceRO))]
-    public class FloatReferenceRODrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(BooleanReferenceRO))]
+    public class BooleanReferenceRODrawer : PropertyDrawer
     {
         private string propertyName { get; set; }
         private VisualElement root { get; set; }
@@ -62,7 +60,7 @@ namespace GMEngine.UtilEditor
             useConstantToggle.BindProperty(useConstantBoolenProperty);
             useConstantToggle.RegisterValueChangedCallback(evt => UseConstantValue(evt.newValue));
 
-            variableSOField = new PropertyField(variableSOProperty); 
+            variableSOField = new PropertyField(variableSOProperty);
             constantValueField = new PropertyField(constantValueProperty);
         }
 
@@ -72,7 +70,7 @@ namespace GMEngine.UtilEditor
 
             valueContainer.Add(constantValueField);
 
-            variableContainer.Add(variableSOField); 
+            variableContainer.Add(variableSOField);
 
             Box.Add(propertyNameLabel);
             Box.Add(useConstantToggle);

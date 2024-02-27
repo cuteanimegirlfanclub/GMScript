@@ -31,8 +31,8 @@ namespace GMEngine.Value
 #endif
     }
 
-    [CreateAssetMenu(menuName = "ScriptableObject/Comparer/Value")]
-    public class ValueComparer : GMComparer
+    [CreateAssetMenu(menuName = "ScriptableObject/Comparer/FloatValue")]
+    public class FloatValueComparer : GMComparer
     {
         [SerializeField] private FloatReferenceRO value;
         [SerializeField] private FloatReferenceRO thresholdValue;

@@ -4,10 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using System;
 using GMEngine.NodeGraph;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 
 namespace GMEngine.GMNodes
 {
@@ -20,10 +18,15 @@ namespace GMEngine.GMNodes
         private InspectorElement inspectorElement;
         public InspectorElement InspectorElement { get { return inspectorElement; } }
 
+        protected VisualElement stateContainer;
+
         protected override void OnCreated()
         {
+            stateContainer = nodeView.Q<VisualElement>("state");
+
             bodyElement = CreateBodyGUI();
             inspectorElement = CreateInspectorGUI();
+
             Init();
         }
 
@@ -33,12 +36,12 @@ namespace GMEngine.GMNodes
             bodyElement = DoCreateInspectorElement(bodyElement);
             bodyElement.name = "NodeViewBody";
             serializedObject.Update();
-            Debug.Log($"Creating {nodeView.name} NodeBody");
+            //Debug.Log($"Creating {nodeView.name} NodeBody");
 
             List<string> hiddenProps = serializedObject.GetPropertiesWithAttribute(typeof(HideInNodeBodyAttribute));
             hiddenProps.Add("PropertyField:m_Script");
 
-            hiddenProps.ForEach(prop => Debug.Log(prop));
+            //hiddenProps.ForEach(prop => Debug.Log(prop));
 
             bodyElement.Children()
                    .First(child => child.name == "")
@@ -46,6 +49,7 @@ namespace GMEngine.GMNodes
                    .Where(child => hiddenProps.Contains(child.name))
                    .ToList()
                    .ForEach(hiddenChild => hiddenChild.RemoveFromHierarchy());
+
 
             bodyElement.styleSheets.Add(GMNodeResources.InspectorElementStyle);
             bodyElement = ModifyBodyGUI(bodyElement);
@@ -65,8 +69,15 @@ namespace GMEngine.GMNodes
                    .Children()
                    .First(child => child.name == "PropertyField:m_Script").RemoveFromHierarchy();
 
+            var statusProp = inspectorElement.Q<PropertyField>("PropertyField:status");
+            statusProp.RegisterValueChangeCallback(DoStatusChangeEditor);
+
             inspectorElement.styleSheets.Add(GMNodeResources.InspectorElementStyle);
-            bodyElement = ModifyInspectorGUI(bodyElement);
+            inspectorElement.style.alignContent = Align.Stretch; 
+            inspectorElement.style.alignSelf = Align.Stretch;
+            inspectorElement.Q("").style.alignSelf = Align.Stretch;
+
+            inspectorElement = ModifyInspectorGUI(inspectorElement);
             serializedObject.ApplyModifiedProperties();
             return inspectorElement;
         }
@@ -109,6 +120,26 @@ namespace GMEngine.GMNodes
 
 
         public virtual void Init()
+        {
+
+        }
+
+        private void DoStatusChangeEditor(SerializedPropertyChangeEvent evt)
+        {
+            ProcessStatus newState = (ProcessStatus)evt.changedProperty.enumValueIndex;
+            var label = stateContainer.Q<Label>("state-declaier");
+            if (!nodeView.Node.started)
+            {
+                label.text = "Waiting";
+            }
+            else
+            {
+                label.text = newState.ToString();
+            }
+            OnStatusChangeEditor(newState, label, stateContainer);
+        }
+
+        protected virtual void OnStatusChangeEditor(ProcessStatus newState, Label stateLabel, VisualElement stateContainer)
         {
 
         }

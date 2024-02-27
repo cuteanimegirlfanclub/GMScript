@@ -21,7 +21,7 @@ namespace GMEngine.Value
     }
 
     [Serializable]
-    public class BooleanReferenceRO : ValueReferenceRO
+    public class BooleanReferenceRO : IValueReferenceRO
     {
         [SerializeField]
         private BooleanVariable variable;
@@ -30,7 +30,7 @@ namespace GMEngine.Value
         public bool constantValue;
         public bool Value => useConstant ? constantValue : variable.Value;
 
-        public override ScriptableObject GetVariableSO()
+        public ScriptableObject GetVariableSO()
         {
             if (useConstant) { return null; }
             else
@@ -41,7 +41,7 @@ namespace GMEngine.Value
     }
 
     [Serializable]
-    public class BooleanReferenceRW : ValueReferenceRW
+    public class BooleanReferenceRW : IValueReferenceRW
     {
         [SerializeField]
         private BooleanVariable variable;
@@ -58,7 +58,7 @@ namespace GMEngine.Value
             return Value;
         }
 
-        public override ScriptableObject GetVariableSO()
+        public ScriptableObject GetVariableSO()
         {
             return variable;
         }

@@ -9,7 +9,7 @@
             <ui:VisualElement name="title-button-container" style="align-items: center; padding-top: 5px;">
                 <ui:VisualElement name="state" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); flex-direction: row; align-items: flex-start; align-self: center; justify-content: center; flex-shrink: 0; margin-top: 0; margin-bottom: 0;">
                     <ui:Label tabindex="-1" text="State:" display-tooltip-when-elided="true" name="state-label" style="-unity-font-style: bold; align-self: auto;" />
-                    <ui:Label tabindex="-1" text="Waiting" display-tooltip-when-elided="true" name="state-declaier" style="-unity-font-style: bold;" />
+                    <ui:Label tabindex="-1" text="Waiting" display-tooltip-when-elided="true" name="state-declaier" style="-unity-font-style: bold; flex-grow: 1;" />
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="selection-border" style="position: relative; left: auto; top: auto; right: auto; bottom: auto; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; flex-grow: 0;" />

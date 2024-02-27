@@ -32,7 +32,7 @@ namespace GMEngine.Value
     }
 
     [Serializable]
-    public class FloatReferenceRO : ValueReference
+    public class FloatReferenceRO : IValueReference
     {
         [SerializeField]
         private FloatVariable variable;
@@ -41,7 +41,7 @@ namespace GMEngine.Value
         public float constantValue;
         public float Value => useConstant ? constantValue : variable.Value;
 
-        public override ScriptableObject GetVariableSO()
+        public ScriptableObject GetVariableSO()
         {
             if( useConstant ) { return null; } else
             {
@@ -51,7 +51,7 @@ namespace GMEngine.Value
     }
 
     [Serializable]
-    public class FloatReferenceRW
+    public class FloatReferenceRW : IValueReferenceRW
     {
         [SerializeField]
         private FloatVariable variable;
@@ -75,6 +75,11 @@ namespace GMEngine.Value
         public float ReadValue()
         {
             return Value;
+        }
+
+        public ScriptableObject GetVariableSO()
+        {
+            return Variable;
         }
     }
 

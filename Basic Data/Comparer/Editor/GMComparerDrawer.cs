@@ -11,7 +11,7 @@ using System;
 
 namespace GMEngine.Value
 {
-    [CustomPropertyDrawer(typeof(ValueComparer))]
+    [CustomPropertyDrawer(typeof(FloatValueComparer))]
     public class GMComparerDrawer : PropertyDrawer
     {
         private Dictionary<int,string> conditionNamePairs = new Dictionary<int,string>();

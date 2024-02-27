@@ -57,6 +57,7 @@ namespace GMEngine.GMNodes
             nameField = this.Q<TextField>("rename");
             nameField.RegisterCallback<KeyDownEvent>(OnEnterKeyDown);
             nameField.value = node.name;
+
         }
 
         private void CreateInputPort()
@@ -132,8 +133,6 @@ namespace GMEngine.GMNodes
 
         private void CreatePropertyContainer()
         {
-            //extensionContainer = this.Q<VisualElement>("extension");
-
             ApplyProperty(DisplayTarget.NodeBody);
         }
 

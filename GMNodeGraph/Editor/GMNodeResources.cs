@@ -13,7 +13,6 @@ namespace GMEngine.GMNodes
         {
             get => AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/GMEngine/Scripts/GMNodeGraph/Resources/GMInspectorElementStyle.uss");
         }
-        public static Dictionary<GMNode, GMNodeEditor> EditorPairs = new Dictionary<GMNode, GMNodeEditor>();
     }
 }
 

@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using System;
-using XNodeEditor;
 
 namespace GMEngine.GMNodes
 {
@@ -42,11 +39,13 @@ namespace GMEngine.GMNodes
 
     public abstract class GMNode : ScriptableObject, IGMNode
     {
-        [HideInInspector] public ProcessStatus status = ProcessStatus.Running;
-        [HideInInspector] public bool started = false;
+        [HideInNodeBody] public ProcessStatus status = ProcessStatus.Running;
+        [HideInNodeBody] public bool started = false;
 
         [SerializeField, HideInInspector] private string guid;
         public string GUID { get => guid; set => guid = value; }
+
+        public event Action<ProcessStatus, ProcessStatus> StatusChanged;
 
         public virtual GMNode DeepCopy()
         {
@@ -61,7 +60,13 @@ namespace GMEngine.GMNodes
                 started = true;
             }
 
+            ProcessStatus previousStatus = status;
             status = OnUpdate();
+            if (status != previousStatus)
+            {
+                OnStatusChanged(previousStatus, status);
+            }
+
             if (status != ProcessStatus.Running)
             {
                 OnStop();
@@ -71,6 +76,11 @@ namespace GMEngine.GMNodes
             return status;
         }
 
+        protected virtual void OnStatusChanged(ProcessStatus previousStatus, ProcessStatus newStatus)
+        {
+            StatusChanged?.Invoke(previousStatus, newStatus);
+        }
+
         protected abstract void OnStart();
         protected abstract void OnStop();
         protected abstract ProcessStatus OnUpdate();
@@ -78,6 +88,7 @@ namespace GMEngine.GMNodes
 #if UNITY_EDITOR
         [HideInInspector]public string description;
         [HideInInspector]public Vector2 uiPosition;
+
 #endif
     }
 }

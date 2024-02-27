@@ -5,18 +5,17 @@ using UnityEngine;
 
 namespace GMEngine.Value
 {
-    [Serializable]
-    public abstract class ValueReference
+    public interface IValueReference
     {
         public abstract ScriptableObject GetVariableSO();
     }
 
-    public abstract class ValueReferenceRO : ValueReference
+    public interface IValueReferenceRO : IValueReference
     {
 
     }
 
-    public abstract class ValueReferenceRW : ValueReference
+    public interface IValueReferenceRW : IValueReference
     {
 
     }
