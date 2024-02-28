@@ -5,9 +5,9 @@
 - [介绍](#介绍)
   - [Prerequisites](#prerequisites)
   - [特性](#特性)
-- [说明&使用](##说明&使用)
-  - [Basic Value](#BasicValue)
-  - [Data Persisitence](##ataPersisitence)
+- [说明&使用](#说明&使用)
+  - [Basic Value](#BasicData)
+  - [Data Persisitence](#DataPersisitence)
   - [GMNodes](#GMNodes)
   - [Addressables](#Addressables)
   - [Brain](#Brain)
@@ -185,3 +185,7 @@
 用GMNodes做的行为树和状态机；  
 用RenderTexture实现的光照强度探测系统，可以模拟照射在物体上的光照强度；  
 ![52b4382d05fb66a236781bb975efcab](https://github.com/cuteanimegirlfanclub/GMScript/assets/130042920/4c055a20-02dc-4d8a-8c80-07c24a8c07a4)
+![beb2237937197a8e3258a5f763c17ea](https://github.com/cuteanimegirlfanclub/GMScript/assets/130042920/057590cf-a826-4f2f-a791-f0aae8d0d0fb)
+![cf65cf0e6452df78e8c77f0c6c0ca13](https://github.com/cuteanimegirlfanclub/GMScript/assets/130042920/dbd7247b-7179-4d5e-ad09-c1ea678a68de)
+![792bbf0a840cbc9e7acf1cb57522a4c](https://github.com/cuteanimegirlfanclub/GMScript/assets/130042920/07f83d21-6cd3-4b03-9cfd-ce7718f2382b)
+
