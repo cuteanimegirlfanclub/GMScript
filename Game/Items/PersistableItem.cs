@@ -13,7 +13,7 @@ namespace GMEngine
         private void RegisterSendDataEvt()
         {
             var st = GameManager.Instance.GetComponent<SimpleStroage>();
-            st.SendGameDataEvt.RegisterListener(this);
+            st.RegisterSendEvtListener(this);
         }
 
         public void SendData(SaveData data)

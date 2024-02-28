@@ -28,6 +28,12 @@ namespace GMEngine
     {
         void PlayOneShot(AudioSource source);
     }
+
+    public interface IPersistPlayAudio
+    {
+        void PlayPersist(AudioSource source);
+    }
+
 }
 
 

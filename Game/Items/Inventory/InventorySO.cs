@@ -15,11 +15,12 @@ namespace GMEngine
 
         public event Action<BaseItemSO> OnItemAdded;
         public event Action<BaseItemSO, int> OnItemRemoved;
-        public AnimatorSO animator;
+        public Animator animator;
 
         private void OnEnable()
         {
             InitiateInventory();
+            animator = GameObject.FindWithTag("MainChara").GetComponent<Animator>();
         }
 
         public void InitiateInventory()
@@ -30,8 +31,6 @@ namespace GMEngine
         public void AddItem(BaseItemSO item)
         {
             item.AddToInventory(this);
-            
-            //OnItemAdded?.Invoke(item);
         }
 
         public void RemoveItem(BaseItemSO item)

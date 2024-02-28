@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,6 +21,9 @@ namespace GMEngine.GMNodes
 
         public GMNode RootNode { get { return root; } set { root = value; } }
 
+        private GMNode current;
+        public GMNode Current => current;
+   
         public IGMBehaviourTree DeepCopy()
         {
             GMBehaviourTree tree = Instantiate(this);
@@ -43,7 +46,6 @@ namespace GMEngine.GMNodes
             }
             return status;
         }
-
 #if UNITY_EDITOR
         /// <summary>
         /// nodes cache for unity editor
@@ -164,6 +166,7 @@ namespace GMEngine.GMNodes
             }
             return children;
         }
+
 #endif
     }
 }

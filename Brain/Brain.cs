@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using System;
 using GMEngine.Value;
 using GMEngine.UI;
+using Cysharp.Threading.Tasks;
 
 namespace GMEngine
 {
@@ -18,7 +19,8 @@ namespace GMEngine
         public SimpleTimerSO pickEquipTimer;
 
         [Header("Animation")]
-        public AnimatorSO animator;
+        //public AnimatorSO animator;
+        public Animator animator;
         [SerializeField]
         public Transform rightHandItemSlot;
 
@@ -40,6 +42,7 @@ namespace GMEngine
 
         private void OnEnable()
         {
+            animator = GetComponent<Animator>();
             pickEquipAction.Enable(); 
             pickEquipAction.performed += PickEquipItemAction;
             pickEquipAction.canceled += PickEquipItemAction;
@@ -122,7 +125,7 @@ namespace GMEngine
         {
             knowledge.SetSelectingItem(itemToDrop);
             inventory.SetHandItem(inventory.items[0]);
-            animator.SetAnimatorParameter("OnDrop");
+            animator.SetBool("OnDrop", true);
             inventory.RemoveItem(itemToDrop.GetComponent<PickableItem>().baseItemSO);
         }
 

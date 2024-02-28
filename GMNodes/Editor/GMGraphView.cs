@@ -41,7 +41,7 @@ namespace GMEngine.NodeGraph
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
 
-            StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{GMBehaviourTreeEditorWindow.AssetPath}/{nameof(GMGraphView)}.uss");
+            StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{GMNodeResources.ResourcesPath}/{nameof(GMGraphView)}.uss");
             styleSheets.Add(styleSheet);
 
             Undo.undoRedoPerformed += OnUndoRedo;

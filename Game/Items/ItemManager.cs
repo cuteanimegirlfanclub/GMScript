@@ -11,7 +11,7 @@ namespace GMEngine
         {
             factory = ScriptableObject.CreateInstance<ItemFactory>();
             var stroage = GameManager.Instance.GetComponent<SimpleStroage>();
-            stroage.ReceiveDataEvt.RegisterListener(this);
+            stroage.RegisterReceiveEvtListener(this);
         }
 
         public async UniTask ReceiveData(SaveData data)

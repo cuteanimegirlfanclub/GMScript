@@ -21,7 +21,7 @@ namespace GMEngine
             //if (action == null) { Debug.Log("null"); }
             //action.canceled += ActionHanlder;
             //action.Enable();
-            inventory.animator.SetAnimatorParameter("isHolding", true);
+            inventory.animator.SetBool("isHolding", true);
 
             if(gameObjectReference != null)
             {
@@ -36,7 +36,7 @@ namespace GMEngine
             //SetDefault();
             //gameObjectReference.GetComponent<BaseItemMono>().SetInventoryPosition();
 
-            inventory.animator.SetAnimatorParameter("isHolding", false);
+            inventory.animator.SetBool("isHolding", false);
             if (gameObjectReference != null)
             {
                 gameObjectReference.GetComponent<ItemBehaviour>().enabled = false;

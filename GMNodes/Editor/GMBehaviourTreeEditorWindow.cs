@@ -47,7 +47,7 @@ namespace GMEngine.NodeGraph
 
         private ObjectField objectField;
 
-        public static string AssetPath => "Assets/GMEngine/Scripts/GMNodeGraph/Resources";
+        public static string AssetPath => "Assets/GMEngine/Scripts/GMNodes/Resources";
         public static string AssetName => nameof(GMBehaviourTreeEditorWindow);
 
         public Action<GMNodeView> OnNodeSelected;
@@ -73,7 +73,7 @@ namespace GMEngine.NodeGraph
         {
             VisualElement root = rootVisualElement;
 
-            VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{AssetPath}/{AssetName}.uxml");
+            VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{GMNodeResources.ResourcesPath}/{AssetName}.uxml");
             visualTree.CloneTree(root);
 
             graphView = root.Q<GMGraphView>();

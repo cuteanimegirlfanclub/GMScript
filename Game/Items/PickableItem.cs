@@ -20,6 +20,11 @@ namespace GMEngine
         [Header("Debug")]
         public bool isGrabbleItem = false;
 
+        public void Start()
+        {
+            baseItemSO.gameObjectReference = this.gameObject;    
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if(other.TryGetComponent(out Brain brain))

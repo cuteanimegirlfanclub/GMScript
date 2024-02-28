@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Collections;
+using Cysharp.Threading.Tasks;
 
 namespace GMEngine.GMNodes
 {
@@ -45,8 +47,6 @@ namespace GMEngine.GMNodes
         [SerializeField, HideInInspector] private string guid;
         public string GUID { get => guid; set => guid = value; }
 
-        public event Action<ProcessStatus, ProcessStatus> StatusChanged;
-
         public virtual GMNode DeepCopy()
         {
             return Instantiate(this);
@@ -60,12 +60,7 @@ namespace GMEngine.GMNodes
                 started = true;
             }
 
-            ProcessStatus previousStatus = status;
             status = OnUpdate();
-            if (status != previousStatus)
-            {
-                OnStatusChanged(previousStatus, status);
-            }
 
             if (status != ProcessStatus.Running)
             {
@@ -74,11 +69,6 @@ namespace GMEngine.GMNodes
             }
 
             return status;
-        }
-
-        protected virtual void OnStatusChanged(ProcessStatus previousStatus, ProcessStatus newStatus)
-        {
-            StatusChanged?.Invoke(previousStatus, newStatus);
         }
 
         protected abstract void OnStart();

@@ -7,6 +7,7 @@ using Cysharp.Threading.Tasks;
 using GMEngine.UI;
 using GMEngine.Editor;
 using System;
+using UnityEngine.UIElements;
 
 namespace GMEngine {
 
@@ -16,8 +17,8 @@ namespace GMEngine {
         public string savePath;
         public List<string> files = new List<string>();
 
-        public SendGameDataEvent SendGameDataEvt;
-        public ReceiveSaveDataEvent ReceiveDataEvt;
+        private SendGameDataEvent sendGameDataEvt;
+        private ReceiveSaveDataEvent receiveDataEvt;
 
         public KeyCode saveKey = KeyCode.L;
         public KeyCode loadKey = KeyCode.K;
@@ -26,17 +27,15 @@ namespace GMEngine {
         {
             savePath = Path.Combine(Application.persistentDataPath, "saveFile");
             GetSaveFiles();
-            Debug.Log($"{name} Awaking..");
-            if(SendGameDataEvt == null)
+            if(sendGameDataEvt == null)
             {
-                SendGameDataEvt = ScriptableObject.CreateInstance<SendGameDataEvent>();
-                Debug.Log($"{SendGameDataEvt} Awaking..");
+                sendGameDataEvt = ScriptableObject.CreateInstance<SendGameDataEvent>();
             }
 
 
-            if(ReceiveDataEvt == null)
+            if(receiveDataEvt == null)
             {
-                ReceiveDataEvt = ScriptableObject.CreateInstance<ReceiveSaveDataEvent>();
+                receiveDataEvt = ScriptableObject.CreateInstance<ReceiveSaveDataEvent>();
             }
         }
 
@@ -44,6 +43,30 @@ namespace GMEngine {
         {
             if (Input.GetKeyUp(saveKey)) { Save(savePath); }
             if (Input.GetKeyUp(loadKey)) { Load(savePath); }
+        }
+
+        public async UniTask RegisterSendEvtListener(IGameDataSender listener)
+        {
+            if(sendGameDataEvt == null)
+            {
+               await UniTask.Yield();
+            }
+            else
+            {
+                sendGameDataEvt.RegisterListener(listener);
+            }
+        }
+
+        public async UniTask RegisterReceiveEvtListener(ISaveDataRecevier listener)
+        {
+            if (receiveDataEvt == null)
+            {
+                await UniTask.Yield();
+            }
+            else
+            {
+                receiveDataEvt.RegisterListener(listener);
+            }
         }
 
         private void GetSaveFiles()
@@ -151,18 +174,18 @@ namespace GMEngine {
 
         protected void RaiseOnPullDataRequest(SaveData data)
         {
-            SendGameDataEvt.Raise(data);
+            sendGameDataEvt.Raise(data);
         }
 
         protected async UniTask RaiseOnReceiveDataRequest(SaveData data)
         {
-            await ReceiveDataEvt.Raise(data);
+            await receiveDataEvt.Raise(data);
         }
 
         private void OnDestroy()
         {
-            SendGameDataEvt.ClearListener();
-            ReceiveDataEvt.ClearListener();
+            sendGameDataEvt.ClearListener();
+            receiveDataEvt.ClearListener();
         }
     }
 }

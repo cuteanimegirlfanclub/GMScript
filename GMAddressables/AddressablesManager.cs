@@ -7,7 +7,7 @@ namespace GMEngine.GMAddressables
 {
     public class AddressablesManager : Singleton<AddressablesManager>
     {
-        [SerializeField] private Dictionary<string, AddressableMono> addressables;
+        [SerializeField] private Dictionary<string, AddressableMono> addressables = new Dictionary<string, AddressableMono>();
         protected override void OnAwake()
         {
 
@@ -27,6 +27,7 @@ namespace GMEngine.GMAddressables
 
         internal static void UnRegisterMember(AddressableMono addressable)
         {
+            if (Instance.addressables == null) return;
             Instance.addressables.Remove(addressable.address.Value);
         }
 

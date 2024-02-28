@@ -10,7 +10,7 @@ namespace GMEngine
             if(itemSlot != null)
             {
                 var controller = GetComponentInParent<InventoryUI>();
-                controller.knowledgeSO.SetSelectingItem(itemSlot.itemSOSlot.gameObjectReference);
+                controller.knowledge.SetSelectingItem(itemSlot.itemSOSlot.gameObjectReference);
                 controller.inventorySO.SetHandItem(itemSlot.itemSOSlot);
                 gameObject.SetActive(false);
             }

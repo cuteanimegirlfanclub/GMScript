@@ -27,16 +27,17 @@
 
 ### Prerequisites
 
-List any software or tools that users need to install before using your project.
+[UniTask](https://github.com/Cysharp/UniTask)
+[xNode](https://github.com/Siccity/xNode)
 
 ### 特性
 
-目标特性是面向对象编程的和编辑器和用户友好，希望可以实现工具间高度解耦的模块化工具。
+目标特性是面向对象编程的和编辑器和用户友好，希望可以实现高度解耦的模块化工具。
 
 ## 说明&使用
 
 ###Basic Value
-1
+![Screenshot](path)
 
 ###Data Persisitence
 2

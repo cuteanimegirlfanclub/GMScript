@@ -12,8 +12,8 @@ namespace GMEngine
 
         protected override void OnAwake()
         {
-            //gameObject.AddComponent<SimpleStroage>();
-            //gameObject.AddComponent<LifeCycleTracker>();
+            gameObject.AddComponent<SimpleStroage>();
+            gameObject.AddComponent<LifeCycleTracker>();
         }
 
 

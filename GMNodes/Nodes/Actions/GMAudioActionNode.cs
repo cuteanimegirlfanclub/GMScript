@@ -2,6 +2,7 @@ using GMEngine.GMAddressables;
 using GMEngine.Value;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace GMEngine.GMNodes
@@ -11,7 +12,24 @@ namespace GMEngine.GMNodes
         [SerializeField] private MultipleSFXSimpleSO AudioSFXSO;
         [SerializeField] private StringReferenceRO audioSourceAddress;
         [SerializeField] private BooleanReferenceRO key;
-        
+        private AudioSource source;
+
+        protected override void OnStart()
+        {
+            source = AddressablesManager.GetMember(audioSourceAddress.Value).GetComponent<AudioSource>();
+        }
+
+        protected override void OnStop()
+        {
+
+        }
+
+        protected override ProcessStatus OnUpdate()
+        {
+            Execute();
+            return ProcessStatus.Success;
+        }
+
         public void Execute()
         {
             if (key.Value)
@@ -26,30 +44,12 @@ namespace GMEngine.GMNodes
 
         void PlayAudio()
         {
-            var audioSource = AddressablesManager.GetMember(audioSourceAddress.Value).GetComponent<AudioSource>();
-            AudioSFXSO.Play(audioSource, true);
+            AudioSFXSO.PlayPersist(source);
         }
 
         void StopAudio()
         {
-            var audioSource = AddressablesManager.GetMember(audioSourceAddress.Value).GetComponent<AudioSource>();
-            AudioSFXSO.Stop(audioSource);
-        }
-
-        protected override void OnStart()
-        {
-
-        }
-
-        protected override void OnStop()
-        {
-
-        }
-
-        protected override ProcessStatus OnUpdate()
-        {
-            Execute();
-            return ProcessStatus.Success;
+            AudioSFXSO.Stop(source);
         }
 
 

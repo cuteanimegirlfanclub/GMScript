@@ -1,12 +1,11 @@
 using UnityEngine;
 using System;
-using GMEngine.Prototype;
 
 namespace GMEngine
 {
     //need to be development
     [CreateAssetMenu(fileName = "State", menuName = "Scriptable Object/StateMachine/State")]
-    public class StateSO : ScriptableObject, IPrototype<StateSO>
+    public class StateSO : ScriptableObject
     {
         [Header("Behaviours")]
         public BehaviourSO[] updateBehaviours;

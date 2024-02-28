@@ -7,7 +7,7 @@ namespace GMEngine
     {
         [Header("Items and Knowledges")]
         public InventorySO inventorySO;
-        public PlayerKnowledge knowledgeSO;
+        public PlayerKnowledge knowledge;
 
         [Header("Slot Factory")]
         public GameObjectFactory factory;
@@ -40,6 +40,7 @@ namespace GMEngine
         {
             //the initialization should be after the player
             InitiateInventoryUI(inventorySO);
+            knowledge = GameObject.FindWithTag("MainChara").GetComponent<PlayerKnowledge>();
         }
 
         private void OnDestroy()
@@ -140,11 +141,6 @@ namespace GMEngine
             int y = number / maxColumn;
             Vector2 position = new Vector2(x * columnInterval, -y * rowInterval);
             return position;
-        }
-
-        private void CheckPosition()
-        {
-
         }
 
         public int GetNumberFromPosition(Vector2 position)

@@ -31,7 +31,7 @@ public class PlayerManager : Singleton<PlayerManager>, IGameDataSender, ISaveDat
         Debug.Log("Init Player");
 
 #if UNITY_EDITOR
-        if (GameObject.FindWithTag("MainChara"))
+        if (GameObject.FindWithTag("MainChara") != null)
         {
             SetupStatus();
             SetupBasicInventory();
@@ -59,8 +59,8 @@ public class PlayerManager : Singleton<PlayerManager>, IGameDataSender, ISaveDat
     private void RegisterStroage()
     {
         SimpleStroage stroage = GameManager.Instance.GetComponent<SimpleStroage>();
-        stroage.SendGameDataEvt.RegisterListener(this); 
-        stroage.ReceiveDataEvt.RegisterListener(this);
+        stroage.RegisterSendEvtListener(this);
+        stroage.RegisterReceiveEvtListener(this);
     }
 
     public void SendData(SaveData data)
