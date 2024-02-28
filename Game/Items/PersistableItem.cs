@@ -1,5 +1,6 @@
 using UnityEngine;
 using GMEngine.TransformExtension;
+using Cysharp.Threading.Tasks;
 
 namespace GMEngine
 {
@@ -10,10 +11,10 @@ namespace GMEngine
             RegisterSendDataEvt();
         }
 
-        private void RegisterSendDataEvt()
+        private async UniTaskVoid RegisterSendDataEvt()
         {
             var st = GameManager.Instance.GetComponent<SimpleStroage>();
-            st.RegisterSendEvtListener(this);
+            await st.RegisterSendEvtListener(this);
         }
 
         public void SendData(SaveData data)

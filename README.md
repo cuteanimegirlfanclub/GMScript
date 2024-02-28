@@ -36,7 +36,7 @@
 
 ## 说明&使用
 
-### Basic Value
+### Basic Data
 使用ScriptableObject来封装某些基础变量，来获取UnityEngine的序列化系统的支持。  
 ```
     public abstract class ValueVariable<T> : ScriptableObject where T : IComparable{

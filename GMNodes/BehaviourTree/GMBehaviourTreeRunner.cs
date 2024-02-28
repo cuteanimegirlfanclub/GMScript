@@ -11,8 +11,6 @@ namespace GMEngine {
         public GMBehaviourTree tree;
         public FloatReferenceRO updateFrequency;
         public BooleanReferenceRO updateOnStart;
-
-
         public void Awake()
         {
             tree = (GMBehaviourTree)tree.DeepCopy();
