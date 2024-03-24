@@ -21,7 +21,7 @@ namespace GMEngine {
     }
 
     [Serializable]
-    public class IntReferenceRO
+    public class IntReferenceRO : IValueReferenceRO
     {
         public bool UseConstant = false;
         public int ConstantValue;
@@ -30,6 +30,11 @@ namespace GMEngine {
         public IntVariable Variable { get => variable; set => variable = value; }
 
         public int Value { get => UseConstant ? ConstantValue : Variable.Value; }
+
+        public ScriptableObject GetVariableSO()
+        {
+            return variable;
+        }
     }
 
     [Serializable]
@@ -52,6 +57,7 @@ namespace GMEngine {
         {
             return Variable;
         }
+
     }
 }
 

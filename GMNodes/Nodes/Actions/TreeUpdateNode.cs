@@ -1,15 +1,13 @@
-using GMEngine.GMAddressables;
-using GMEngine.Value;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace GMEngine.GMNodes
 {
-    public class GMGameObjectController : GMActionNode
+    public class TreeUpdateNode : GMActionNode
     {
-        [SerializeField] private BooleanReferenceRO key;
-        [SerializeField] private StringReferenceRO address;
+        [SerializeField] private GMBehaviourTree tree;
+
         protected override void OnStart()
         {
 
@@ -17,13 +15,20 @@ namespace GMEngine.GMNodes
 
         protected override void OnStop()
         {
-            
+
         }
 
         protected override ProcessStatus OnUpdate()
         {
-            AddressablesManager.GetMember(address.Value).gameObject.SetActive(key.Value);
+            tree.Update();
             return ProcessStatus.Success;
+        }
+
+        public override GMNode DeepCopy()
+        {
+            TreeUpdateNode node = Instantiate(this);
+            node.tree = (GMBehaviourTree)tree.DeepCopy();
+            return node;
         }
     }
 }

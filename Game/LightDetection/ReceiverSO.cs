@@ -14,7 +14,7 @@ namespace GMEngine
         LightDetection m_detector;
 
         [SerializeField]
-        FloatReferenceRO m_lightIntensity;
+        IntReferenceRO m_lightLevel;
 
         [SerializeField]
         StateMachineWrapper m_lightMachineController;
@@ -24,7 +24,7 @@ namespace GMEngine
             GameObject DetectorGO = Instantiate(m_detectorPrefab, parent);
             m_detector = DetectorGO.GetComponent<LightDetection>();
             //send intensityvalueSO to the detector
-            m_detector.m_lightIntensity.Variable = m_lightIntensity.GetVariableSO() as FloatVariable;
+            m_detector.m_lightLevel.Variable = m_lightLevel.GetVariableSO() as IntVariable;
         }
 
         public void UpdateReceiver()

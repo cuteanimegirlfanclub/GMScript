@@ -4,7 +4,8 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 
-namespace GMEngine
+
+namespace GMEngine.Game
 {
     public class ItemFactory : ScriptableObject
     {

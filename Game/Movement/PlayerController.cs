@@ -5,7 +5,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     public class PlayerController : MonoBehaviour
     {
@@ -31,6 +31,8 @@ namespace GMEngine
         {
             moveAction.Enable();
             runAction.Enable();
+
+            currentSpeed.Value = 2.5f;
         }
 
         private void Update()

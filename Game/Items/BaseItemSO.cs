@@ -1,16 +1,10 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace GMEngine
 {
     public abstract class BaseItemSO : ScriptableObject, IPersistableSO
     {
-        /// <summary>
-        /// the gameObject will be reference when the BaseItemSO was loaded
-        /// </summary>
-        public GameObject gameObjectReference;
-
         /// <summary>
         /// will be repalce with InputActionReference
         /// </summary>
@@ -30,20 +24,13 @@ namespace GMEngine
         /// </summary>
         /// <param name="inventory"></param>
         public abstract int RemoveFromInventory(InventorySO inventory); 
-        public abstract void SetAsHandItem(InventorySO inventory);
-
-        public abstract void SetDefault();
-        /// <summary>
-        /// Behaviours when the item was set as HandItem
-        /// </summary>
-        public abstract void OnRegisterHandItem(InventorySO inventory);
-        /// <summary>
-        /// Behaviours when the item was remove form HamdItem
-        /// </summary>
-        public abstract void OnUnregisterHandItem(InventorySO inventory);
-
         public abstract byte[] BufferSOData();
         public abstract void GetSOData(byte[] buffer);
+
+        public virtual BaseItemSO DeepCopy()
+        {
+            return Instantiate(this);
+        }
     }
 
     public abstract class SingleItemSO : BaseItemSO
@@ -57,7 +44,6 @@ namespace GMEngine
             else
             {
                 inventory.items.Add(this);
-                inventory.InvokeOnItenAddedEvent(this);
             }
         }
 
@@ -105,6 +91,7 @@ namespace GMEngine
                 return -1;
             }
         }
+
         public override byte[] BufferSOData()
         {
             return BitConverter.GetBytes(number);

@@ -74,6 +74,8 @@ namespace GMEngine
             {
                 currentTime = 0;
             }
+
+
         }
         public override void ResetTimer()
         {

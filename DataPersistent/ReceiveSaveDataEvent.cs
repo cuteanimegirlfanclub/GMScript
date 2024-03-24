@@ -7,7 +7,6 @@ namespace GMEngine
 {
     public class ReceiveSaveDataEvent : GameEvent<ISaveDataRecevier>
     {
-
         public async UniTask Raise(SaveData saveData)
         {
             foreach (var listener in listeners)

@@ -4,6 +4,7 @@ using TMPro;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
+using UnityEngine.EventSystems;
 
 namespace GMEngine.UI
 {
@@ -13,9 +14,10 @@ namespace GMEngine.UI
         confirmation
     }
 
-    public class SuspendedConfirmationBox : MonoBehaviour
+    public class SuspendedConfirmationBox : MonoBehaviour, ISubmitHandler, ICancelHandler
     {
         [SerializeField] private TextMeshProUGUI messageBox;
+        private bool userResponse = false;
 
         public async UniTask<bool> WaitForUserResponse(string message, BoxType boxType)
         {
@@ -36,13 +38,13 @@ namespace GMEngine.UI
             {
                 case BoxType.message:
                     {
-                        bool userResponse = await InternalCallMessageBox(haveResponsed);
+                        userResponse = await InternalCallMessageBox(haveResponsed);
                         return userResponse;
                     }
                 case BoxType.confirmation:
                     {
                         Debug.Log($"{name} Getting Confirmation Box");
-                        bool userResponse = await InternalCallConfirmationBox(haveResponsed);
+                        userResponse = await InternalCallConfirmationBox(haveResponsed);
                         return userResponse;
                     }
                 default:
@@ -113,6 +115,16 @@ namespace GMEngine.UI
             gameObject.SetActive(false);
 
             return userResponse;
+        }
+
+        public void OnCancel(BaseEventData eventData)
+        {
+            userResponse = false;
+        }
+
+        public void OnSubmit(BaseEventData eventData)
+        {
+            userResponse = true;
         }
     }
 }

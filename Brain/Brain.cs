@@ -3,9 +3,11 @@ using UnityEngine.InputSystem;
 using System;
 using GMEngine.Value;
 using GMEngine.UI;
-using Cysharp.Threading.Tasks;
+using UnityEngine.InputSystem.Interactions;
+using GMEngine.TransformExtension;
+using UnityEngine.Animations.Rigging;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     public class Brain : MonoBehaviour
     {
@@ -15,126 +17,141 @@ namespace GMEngine
         public InputAction dropAction;
         public DialogueDisplayer displayer;
 
-        [Header("Action Timer")]
-        public SimpleTimerSO pickEquipTimer;
+        [Header("Action Timer Setting")]
+        [Obsolete] private SimpleTimerSO pickEquipTimer;
+        public TimerSliderController timerControl;
+        public FloatReferenceRO duration;
 
         [Header("Animation")]
         //public AnimatorSO animator;
         public Animator animator;
         [SerializeField]
         public Transform rightHandItemSlot;
-
-        [Header("Events")]
-        //events for monobehaviour
-        //so event
-        public GameActionDelegate OnPickingItem;
-
-        public FloatReferenceRW pickProcessValue;
-        //c# event
-        public event EventHandler<Transform> OnEquipItem;
+        //public FloatReferenceRW pickProcessValue;
 
         [Header("Inventory")]
-        //we need to store the konwledge for ui usage
-        public InventorySO inventory;
-        [Header("Cache")]
+        public InventoryController inventory;
+        [Header("Memory")]
         public PlayerKnowledge knowledge;
 
 
         private void OnEnable()
         {
             animator = GetComponent<Animator>();
-            pickEquipAction.Enable(); 
-            pickEquipAction.performed += PickEquipItemAction;
-            pickEquipAction.canceled += PickEquipItemAction;
+            pickEquipAction.Enable();
+            pickEquipAction.started += ShowRoundSliderAndBeginPickActionSequence;
 
-            dropAction.Enable(); dropAction.canceled += DropItemAction;
+            dropAction.Enable();
+            dropAction.canceled += DropHandItemAction;
 
-            displayer.DisplayDialogue("trying to use the dialogue displayer to show dialogue");
+            displayer.DisplayDialogue("trying to use the dialogue displayer to show dialogue").Forget();
         }
 
         private void OnDisable()
         {
             pickEquipAction.Disable();
-            pickEquipAction.performed -= PickEquipItemAction;
-            pickEquipAction.canceled -= PickEquipItemAction;
+            pickEquipAction.started -= ShowRoundSliderAndBeginPickActionSequence;
 
-            dropAction.Disable(); dropAction.canceled -= DropItemAction;
+            dropAction.Disable();
+            dropAction.canceled -= DropHandItemAction;
         }
 
-        public async void PickEquipItemAction(InputAction.CallbackContext context)
-        {
-            if (knowledge.haveGrabbleItem())
-            {
 
-                if (context.performed)
-                {
-                    // Hold key long enough to pick and equip item
-                    bool timerCompleted = await pickEquipTimer.StartCountAsync();
-                    if (timerCompleted)
-                    {
-                        PickAndEquip();
-                    }
-                }
-                else if (context.canceled)
-                {
-                    PickItem();
-                }
-
-                pickEquipTimer.ResetTimer();
-            }
-        }
-        public void PickItem()
+        private void ShowRoundSliderAndBeginPickActionSequence(InputAction.CallbackContext context)
         {
             if (!knowledge.haveGrabbleItem()) return;
-            inventory.AddItem(knowledge.grabbleItem.GetComponent<PickableItem>().baseItemSO);
-            OnPickingItem?.Raise();
+
+            if(context.interaction is HoldInteraction holdInteraction)
+            {
+                holdInteraction.duration = duration.Value;
+                timerControl.UseSliderOnce(duration.Value);
+
+                pickEquipAction.performed += PickEquipItemAction;
+                pickEquipAction.canceled += PickItemAction;
+            }
+            else
+            {
+                Debug.LogError($"{gameObject.name}'s {pickEquipAction.name} need to have Hold Interaction!");
+            }
+            Debug.Log(context.phase);
         }
 
-        public void EquipItem()
+        private void PickEquipItemAction(InputAction.CallbackContext context)
         {
-            //play the animation and will trigger the animation event
-            inventory.SetHandItem(knowledge.GetSelectingItem().GetComponent<PickableItem>().baseItemSO);
-
-            OnEquipItem?.Invoke(this, transform);
+            timerControl.HideSlider();
+            //Debug.Log(context.phase);
+            pickEquipAction.canceled -= PickItemAction;
+            PickAndEquip(knowledge.GrabbleItem);
         }
 
-        public void PickAndEquip()
+        private void PickItemAction(InputAction.CallbackContext context)
         {
-            //pick
-            PickItem();
-
-            //transfer Item State
-            knowledge.SetSelectingItem(knowledge.grabbleItem);
-            knowledge.grabbleItem = null;
-
-            //equip
-            EquipItem();
+            timerControl.HideSlider();
+            //Debug.Log(context.phase);
+            pickEquipAction.performed -= PickEquipItemAction;
+            PickItem(knowledge.GrabbleItem);
         }
 
-        public void DropItemAction(InputAction.CallbackContext context)
+        public void PickItem(InventoryItem item)
         {
-            if(inventory.items.Count == 1 || inventory.handItem is BareHandSO)
+            inventory.AddItem(item);
+            //animator.Play();
+            knowledge.SetGrabbleItem(null);
+        }
+
+        public void PickItem()
+        {
+            if (!knowledge.haveGrabbleItem())
             {
                 return;
             }
-
-            DropItem(inventory.handItem.gameObjectReference);
+            PickItem(knowledge.GrabbleItem);
         }
 
-        public void DropItem(GameObject itemToDrop)
+        public void EquipItem(InventoryItem item)
         {
-            knowledge.SetSelectingItem(itemToDrop);
-            inventory.SetHandItem(inventory.items[0]);
-            animator.SetBool("OnDrop", true);
-            inventory.RemoveItem(itemToDrop.GetComponent<PickableItem>().baseItemSO);
+            inventory.ItemOnHand = item;
         }
 
+        public void PickAndEquip(InventoryItem item)
+        {
+            //pick
+            PickItem(item);
+            //equip
+            EquipItem(item);
+        }
+
+        private void DropHandItemAction(InputAction.CallbackContext context)
+        {
+            DropHandItem(true);
+        }
+
+        public void DropHandItem(bool playAnimation)
+        {
+            DropItem(inventory.ItemOnHand, playAnimation);
+        }
+
+        public void DropItem(InventoryItem item,bool playAnimation)
+        {
+            if (item == null || item.baseItemSO is BareHandSO) return;
+            inventory.GetComponent<Animator>().SetBool(inventory.ItemOnHand.onEquipStateInfo, false);
+            if (playAnimation)
+            {
+                animator.SetBool("OnDrop", true);
+                knowledge.SetSelectingItem(item);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            inventory.SetupFallBackHandItem();
+        }
         /// <summary>
         /// Animation Event Handler
         /// </summary>
         public void EquipItemHandler()
         {
-            GameObject itemToEquip = knowledge.GetSelectingItem();
+            GameObject itemToEquip = inventory.ItemOnHand.gameObject;
             itemToEquip.transform.SetParent(rightHandItemSlot);
             itemToEquip.transform.localPosition = Vector3.zero;
             itemToEquip.transform.rotation = itemToEquip.transform.root.rotation;
@@ -145,8 +162,8 @@ namespace GMEngine
         /// </summary>
         public void ThrowItemHandler()
         {
-            GameObject itemToDrop = knowledge.GetSelectingItem();
-            itemToDrop.GetComponent<PickableItem>().DropToGround();
+            knowledge.SelectingItem.DropToGround(inventory);
+            knowledge.SetSelectingItem(null);
         }
     }
 }

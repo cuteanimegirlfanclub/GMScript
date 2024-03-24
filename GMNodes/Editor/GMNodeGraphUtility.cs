@@ -82,6 +82,7 @@ namespace GMEngine.GMNodes
             List<string> propertyNames = new List<string>();
             while (iterator.NextVisible(true))
             {
+                if (iterator.name == "m_Script") continue;
                 var attributes = iterator.GetAttributes<HideInNodeBodyAttribute>(true);
                 if (attributes != null)
                 {
@@ -92,11 +93,6 @@ namespace GMEngine.GMNodes
                 }
             }
             return propertyNames;
-        }
-
-        public static List<string> GetPropertiesWithAttribute(this UnityEngine.Object _object, Type attributeType)
-        {
-            return null;
         }
 
         public static TAttribute[] GetAttributes<TAttribute>(this SerializedProperty serializedProperty, bool inherit)
@@ -117,47 +113,45 @@ namespace GMEngine.GMNodes
 
             foreach (string pathSegment in serializedProperty.propertyPath.Split('.'))
             {
-                ///Debug.Log($"{pathSegment}");
-                var fieldInfo = targetObjectType.GetField(pathSegment, AllBindingFlags);
-                if(fieldInfo == null)
-                {
-                    fieldInfo = targetObjectType.BaseType.GetField(pathSegment, AllBindingFlags);
-                }
-
-                if (fieldInfo == null)
-                {
-                    fieldInfo = targetObjectType.BaseType.BaseType.GetField(pathSegment, AllBindingFlags);
-                }
-
+                var fieldInfo = GetFieldInfo(targetObjectType, pathSegment);
                 if (fieldInfo != null)
                 {
                     Debug.Log($"Getting {targetObjectType}'s {fieldInfo}");
                     return (TAttribute[])fieldInfo.GetCustomAttributes<TAttribute>(inherit);
                 }
 
-                var propertyInfo = targetObjectType.GetProperty(pathSegment, AllBindingFlags);
-                Debug.Log($"Getting {targetObjectType}'s {propertyInfo}");
-                if(propertyInfo == null)
-                {
-                    propertyInfo = targetObjectType.BaseType.GetProperty(pathSegment, AllBindingFlags);
-                }
-
-                if (propertyInfo == null)
-                {
-                    propertyInfo = targetObjectType.BaseType.BaseType.GetProperty(pathSegment, AllBindingFlags);
-                }
-
+                var propertyInfo = GetPropertyInfo(targetObjectType, pathSegment);
                 if (propertyInfo != null)
                 {
                     Debug.Log($"Getting {targetObjectType}'s {propertyInfo}");
                     return (TAttribute[])propertyInfo.GetCustomAttributes<TAttribute>(inherit);
                 }
             }
-
-            Debug.LogWarning($"Could not find the field or property of {nameof(serializedProperty)}");
+            Debug.LogWarning($"Could not find the field or property of {serializedProperty.name}");
             return null;
         }
 
+        public static FieldInfo GetFieldInfo(Type type, string fieldName)
+        {
+            FieldInfo fieldInfo = null;
+            while (type != null && fieldInfo == null)
+            {
+                fieldInfo = type.GetField(fieldName, AllBindingFlags);
+                type = type.BaseType;
+            }
+            return fieldInfo;
+        }
+
+        public static PropertyInfo GetPropertyInfo(Type type, string propertyName)
+        {
+            PropertyInfo propertyInfo = null;
+            while (type != null && propertyInfo == null)
+            {
+                propertyInfo = type.GetProperty(propertyName, AllBindingFlags);
+                type = type.BaseType;
+            }
+            return propertyInfo;
+        }
         public class GMPropertyVisitor : PropertyVisitor
         {
             private const int k_InitialIndent = 0;

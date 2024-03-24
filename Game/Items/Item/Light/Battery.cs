@@ -7,6 +7,11 @@ namespace GMEngine
     {
         public FloatReferenceRW charge;
 
+        public void Awake()
+        {
+            charge.Variable.DeepCopy();
+        }
+
         public void OnEnable()
         {
             

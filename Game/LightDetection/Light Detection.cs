@@ -14,8 +14,6 @@ namespace GMEngine
         [Tooltip("Time between light value updates (default = 0.1f).")]
         public float m_fUpdateTime = 0.5f;
 
-        public float lightIntensity;
-
         private const int c_iTextureSize = 1;
 
         private Texture2D m_texLight;
@@ -24,10 +22,7 @@ namespace GMEngine
         private Color m_LightPixel;
         Camera m_camLightScan;
 
-        //private Receiver m_Receiver;
-
-        [SerializeField]
-        public FloatReferenceRW m_lightIntensity;
+        public IntReferenceRW m_lightLevel;
 
         /// <summary>
         /// this value needs to be updated as a globle value during GameInitiation
@@ -36,7 +31,6 @@ namespace GMEngine
 
         private void Awake()
         {
-            //m_Receiver = GetComponentInParent<Receiver>();
             m_camLightScan = GetComponentInChildren<Camera>();
         }
 
@@ -84,7 +78,8 @@ namespace GMEngine
 
                 //Read the pixel in middle of the texture.
                 m_LightPixel = m_texLight.GetPixel(c_iTextureSize / 2, c_iTextureSize / 2);
-
+                
+                float lightIntensity;
                 //Calculate light value, based on color intensity, 0.01 level capacity
                 lightIntensity = 0.2126f * m_LightPixel.r + 0.7152f * m_LightPixel.g + 0.0722f * m_LightPixel.b;
 
@@ -93,10 +88,7 @@ namespace GMEngine
                     Debug.Log("Light Value: " + lightIntensity);
                 }
 
-                lightIntensity = IntensityMasharlling(lightIntensity);
-                //m_Receiver.receivedLightIntensity = lightIntensity;
-                m_lightIntensity.WriteValue(lightIntensity);
-
+                m_lightLevel.Value = IntensityMasharlling(lightIntensity);
 
                 yield return new WaitForSeconds(_fUpdateTime);
             }
@@ -104,7 +96,7 @@ namespace GMEngine
 
 
         //marshaling intensity value, make it easy to interact with health system,based on 5 level of intensity
-        private float IntensityMasharlling(float intensity)
+        private int IntensityMasharlling(float intensity)
         {
             float baseOffset = 100f;
             float marshalledIntensity = (intensity - c_baseLightIntensity) * baseOffset;
@@ -115,13 +107,13 @@ namespace GMEngine
             float level2 = 1.9f;
             float level3 = 2.3f;
 
-            if (marshalledIntensity < 0) { return -1f; }
-            if (marshalledIntensity - level0 < 0) { return 0.1f; }
-            if (marshalledIntensity - level1 < 0) { return 0.15f; }
-            if (marshalledIntensity - level2 < 0) { return 0.2f; }
-            if (marshalledIntensity - level3 < 0) { return 0.5f; }
+            if (marshalledIntensity < 0) { return -1; }
+            if (marshalledIntensity - level0 < 0) { return 1; }
+            if (marshalledIntensity - level1 < 0) { return 2; }
+            if (marshalledIntensity - level2 < 0) { return 3; }
+            if (marshalledIntensity - level3 < 0) { return 4; }
             else
-                return 0.7f;
+                return 5;
         }
     }
 

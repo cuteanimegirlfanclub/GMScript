@@ -23,20 +23,16 @@ namespace GMEngine.Editor.UI
 
         private void InternalDisplay()
         {
-            DialogueDisplayer player = (DialogueDisplayer)target;
-            player.DisplayDialogue(player.editorMessage);
+            DialogueDisplayer displayer = (DialogueDisplayer)target;
+            if (EditorApplication.isPlaying)
+            {
+                displayer.DisplayDialogue(displayer.editorMessage).Forget();
+            }
+            else
+            {
+                displayer.DisplayDialogueEditor(displayer.editorMessage).Forget();
+            }
         }
-
-
-        //public override void OnInspectorGUI()
-        //{
-        //    DialogueDisplayer player = (DialogueDisplayer)target;
-        //    DrawDefaultInspector();
-        //    if (GUILayout.Button("Display"))
-        //    {
-        //        player.DisplayDialogueEditor(player.editorMessage);
-        //    }
-        //}
     }
 }
 

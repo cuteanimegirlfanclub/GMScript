@@ -29,7 +29,7 @@ namespace GMEngine.GMXNode
 
         public override IGMNode DeepCopy(IGMBehaviourTree graphHotfix, IGMNode parentRuntime)
         {
-            Node.graphHotfix = (XNode.NodeGraph)graphHotfix;
+            XNode.Node.graphHotfix = (XNode.NodeGraph)graphHotfix;
             ActionGMXNode copy = Instantiate(this);
             copy.parent = (GMXNode)parentRuntime;
             copy.graph.nodes.Add(copy);

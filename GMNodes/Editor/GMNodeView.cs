@@ -19,7 +19,7 @@ namespace GMEngine.GMNodes
         Inspector
     }
 
-    public class GMNodeView : Node
+    public class GMNodeView : UnityEditor.Experimental.GraphView.Node
     {
         private GMNode node;
         public GMNode Node { get => node; }

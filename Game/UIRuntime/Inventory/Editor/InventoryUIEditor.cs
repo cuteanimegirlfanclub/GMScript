@@ -1,11 +1,11 @@
-using GMEngine;
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using System.Linq;
+using GMEngine.Editor.UI;
 
-namespace GMEngine.Editor.UI
+namespace GMEngine.Game
 {
     [CustomEditor(typeof(InventoryUI))]
     public class InventoryUIEditor : UnityEditor.Editor

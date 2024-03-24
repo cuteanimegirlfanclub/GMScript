@@ -6,7 +6,7 @@ namespace GMEngine
 {
     public class GameObjectFactory : ScriptableObject
     {
-        private Stack<GameObject> stack = new Stack<GameObject>();
+        [SerializeField] private Stack<GameObject> stack = new Stack<GameObject>();
         public int maxPool;
         public GameObject gameObjectPrefab;
         private readonly object factoryLock = new object();
@@ -20,7 +20,7 @@ namespace GMEngine
                 Debug.Log($"Getting Product {gameObjectPrefab.name}, Factory Now have {stack.Count} Product");
                 if (stack.Count > 0)
                 {
-                    Debug.Log($"Find Pooled Product {gameObjectPrefab.name}");
+                    Debug.Log($"Find Pooled Product {gameObjectPrefab.name} {stack.Peek().name}");
                     GameObject gameObject = stack.Pop();
                     gameObject.SetActive(true);
                     return gameObject;
@@ -28,7 +28,7 @@ namespace GMEngine
 
                 if (stack.Count < maxPool)
                 {
-                    Debug.Log($"Creating New Product {gameObjectPrefab.name} Parent is {parent}");
+                    Debug.Log($"Creating New Product {gameObjectPrefab.name} Parent is {parent.gameObject.name}");
                     GameObject newProduct = Instantiate(gameObjectPrefab, parent);
                     newProduct.name = totalCreated++.ToString();
                     return newProduct;
@@ -58,8 +58,9 @@ namespace GMEngine
 
         public void PoolProduct(GameObject product)
         {
+            if (stack.Contains(product)) return;
             stack.Push(product);
-            product.FactoryReset();
+            //product.FactoryReset();
             product.SetActive(false);
             Debug.Log($"Pooling Product, Now we have {stack.Count} Products");
         }

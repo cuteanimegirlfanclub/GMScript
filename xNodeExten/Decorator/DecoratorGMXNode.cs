@@ -17,7 +17,7 @@ namespace GMEngine.GMXNode
 
         public override IGMNode DeepCopy(IGMBehaviourTree treeHotfix, IGMNode parentRuntime)
         {
-            Node.graphHotfix = (XNode.NodeGraph)treeHotfix;
+            XNode.Node.graphHotfix = (XNode.NodeGraph)treeHotfix;
             DecoratorGMXNode copy = Instantiate(this);
             copy.graph = (XNode.NodeGraph)treeHotfix;
 

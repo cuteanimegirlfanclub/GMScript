@@ -35,7 +35,7 @@ namespace GMEngine.GMXNode
 
         public virtual IGMNode DeepCopy(IGMBehaviourTree graphHotfix, IGMNode parentRuntime)
         {
-            Node.graphHotfix = (XNode.NodeGraph)graphHotfix;
+            XNode.Node.graphHotfix = (XNode.NodeGraph)graphHotfix;
             return Instantiate(this);
         }
 

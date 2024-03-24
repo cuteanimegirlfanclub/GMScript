@@ -11,44 +11,20 @@ namespace GMEngine
     {
         public List<BaseItemSO> items;
 
-        public BaseItemSO handItem;
-
-        public event Action<BaseItemSO> OnItemAdded;
-        public event Action<BaseItemSO, int> OnItemRemoved;
-        public Animator animator;
-
-        private void OnEnable()
-        {
-            InitiateInventory();
-            animator = GameObject.FindWithTag("MainChara").GetComponent<Animator>();
-        }
-
-        public void InitiateInventory()
-        {
-            if (items.Count > 0) { handItem = items[0]; }
-        }
-
         public void AddItem(BaseItemSO item)
         {
             item.AddToInventory(this);
         }
 
-        public void RemoveItem(BaseItemSO item)
+        public int RemoveItem(BaseItemSO item)
         {
-            int index = item.RemoveFromInventory(this);
-            OnItemRemoved?.Invoke(item, index);
+            return item.RemoveFromInventory(this);
         }
 
-        public void SetHandItem(BaseItemSO item)
+        public InventorySO DeepCopy()
         {
-            if (handItem == item) return;
-            item.SetAsHandItem(this);
+            return Instantiate(this);
         }
 
-        public void InvokeOnItenAddedEvent(BaseItemSO item)
-        {
-            OnItemAdded?.Invoke(item);
-        }
     }
 }
-

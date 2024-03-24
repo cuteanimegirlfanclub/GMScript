@@ -9,6 +9,11 @@ namespace GMEngine.Value
         public abstract void SetValue(T value);
 
         public abstract T Value { get; }
+
+        public virtual ValueVariable<T> DeepCopy()
+        {
+            return Instantiate(this);
+        }
     }
 
     [Serializable]

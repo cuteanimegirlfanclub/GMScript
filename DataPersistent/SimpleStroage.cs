@@ -5,7 +5,6 @@ using GMEngine.Event;
 using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
 using GMEngine.UI;
-using GMEngine.Editor;
 using System;
 using UnityEngine.UIElements;
 
@@ -91,7 +90,7 @@ namespace GMEngine {
             GameManager.Instance.PauseGame(true);
             try
             {
-                SuspendedConfirmationBox box = GlobalUIManager.Instance.GetSystemBox();
+                SuspendedConfirmationBox box = GlobalUIManager.GetSystemBox();
                 if (await box.WaitForUserResponse("Save Current Data", BoxType.confirmation))
                 {
 
@@ -125,7 +124,7 @@ namespace GMEngine {
             GameManager.Instance.PauseGame(true);
             try
             {
-                SuspendedConfirmationBox box = GlobalUIManager.Instance.GetSystemBox();
+                SuspendedConfirmationBox box = GlobalUIManager.GetSystemBox();
                 if (await box.WaitForUserResponse("Load Latest Save File", BoxType.confirmation))
                 {
                     await PerformLoadAsync(savePath);
@@ -142,9 +141,9 @@ namespace GMEngine {
         }
         private async UniTask PerformLoadAsync(string savePath)
         {
-            GlobalUIManager.Instance.SetLoadingUI(true);
+            GlobalUIManager.SetLoadingUI(true);
             await SimpleLoadGameAsync(savePath);
-            GlobalUIManager.Instance.SetLoadingUI(false);
+            GlobalUIManager.SetLoadingUI(false);
         }
 
         public async UniTask SimpleLoadGameAsync(string savePath)

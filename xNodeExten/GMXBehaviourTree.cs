@@ -48,16 +48,16 @@ namespace GMEngine.GMXNode
             return treeRuntime;
         }
 
-        public List<Node> SortNodesByHierarchy()
+        public List<XNode.Node> SortNodesByHierarchy()
         {
-            List<Node> sortedNodes = new List<Node>();
+            List<XNode.Node> sortedNodes = new List<XNode.Node>();
 
             DepthFirstTraversal(root, ref sortedNodes);
 
             return sortedNodes;
 
         }
-        private void DepthFirstTraversal(Node currentNode, ref List<Node> sortedNodes)
+        private void DepthFirstTraversal(XNode.Node currentNode, ref List<XNode.Node> sortedNodes)
         {
             if (currentNode == null)
             {

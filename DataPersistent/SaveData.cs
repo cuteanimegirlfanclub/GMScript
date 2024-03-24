@@ -1,3 +1,4 @@
+using GMEngine.Game;
 using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -139,7 +140,7 @@ namespace GMEngine
 
         public ItemData PackToSaveData(GameObject gameObject)
         {
-            var itemSO = gameObject.GetComponent<PickableItem>().baseItemSO;
+            var itemSO = gameObject.GetComponent<InventoryItem>().baseItemSO;
             string name = itemSO.GetType().Name;
             byte[] buffer = itemSO.BufferSOData();
             Vector3 position = gameObject.transform.position;
@@ -154,7 +155,7 @@ namespace GMEngine
     {
         public BaseItemSO baseItemSO;
         /// <summary>
-        /// In the form of SO
+        /// Restore Item's Specific Date
         /// </summary>
         public byte[] itemDataBuffer;
         public string itemName;

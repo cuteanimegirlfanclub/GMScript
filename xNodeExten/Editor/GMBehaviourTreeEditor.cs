@@ -20,7 +20,7 @@ namespace GMEngine.GMXNode.Editor
             //Add root node to the tree
             if (tree.root == null)
             {
-                Node.graphHotfix = target;
+                XNode.Node.graphHotfix = target;
                 tree.root = ScriptableObject.CreateInstance<RootNode>();
                 tree.root.graph = target;
                 target.nodes.Add(tree.root);
@@ -37,7 +37,7 @@ namespace GMEngine.GMXNode.Editor
             base.OnGUI();
         }
 
-        public override void OnNodeCreated(Node node)
+        public override void OnNodeCreated(XNode.Node node)
         {
             base.OnNodeCreated(node);
         }
@@ -48,7 +48,7 @@ namespace GMEngine.GMXNode.Editor
             return base.GetNodeMenuName(type);
         }
 
-        public override void RemoveNode(Node node)
+        public override void RemoveNode(XNode.Node node)
         {
             //avoid user removing the rootnode
             if (node.GetType() == typeof(RootNode)) { return; }

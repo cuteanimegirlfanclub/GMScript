@@ -1,12 +1,14 @@
+using Cysharp.Threading.Tasks;
 using GMEngine.GameObjectExtension;
 using UnityEngine;
+using GMEngine.UI;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
-    public class InventoryUI : MonoBehaviour
+    public class InventoryUI : GMUgui
     {
         [Header("Items and Knowledges")]
-        public InventorySO inventorySO;
+        public InventoryController inventory;
         public PlayerKnowledge knowledge;
 
         [Header("Slot Factory")]
@@ -30,28 +32,29 @@ namespace GMEngine
         [Header("Debug")]
         public int slotCount = 0;
 
-        private void Awake()
+        public override async void Initiate()
         {
-            inventorySO.OnItemAdded += AppendItemSlot;
-            inventorySO.OnItemRemoved += RemoveItemSlot;
-        }
-
-        private void Start()
-        {
-            //the initialization should be after the player
-            InitiateInventoryUI(inventorySO);
-            knowledge = GameObject.FindWithTag("MainChara").GetComponent<PlayerKnowledge>();
+            //the initialization be incharged by ui manager
+            await InitiateInventoryUI();
         }
 
         private void OnDestroy()
         {
-            inventorySO.OnItemAdded -= AppendItemSlot;
-            inventorySO.OnItemRemoved -= RemoveItemSlot;
+            inventory.OnItemAdded -= AppendItemSlot;
+            inventory.OnItemRemoved -= RemoveItemSlot;
         }
 
-        public void InitiateInventoryUI(InventorySO inventory)
+        public async UniTask InitiateInventoryUI()
         {
             Debug.Log("initiate inventory ui...");
+            GameObject chara = await gameObject.AwaitFindGameObjectWithTag("MainChara");
+            Debug.Log(chara.name);
+
+            knowledge = chara.GetComponentInChildren<PlayerKnowledge>();
+
+            inventory = chara.GetComponent<InventoryController>();
+            inventory.OnItemAdded += AppendItemSlot;
+            inventory.OnItemRemoved += RemoveItemSlot;
 
             InitiateSlotFactory();
 
@@ -61,10 +64,9 @@ namespace GMEngine
 
         }
 
-
-
         private void InitiateSlotFactory()
         {
+            if (factory != null) return;
             factory = FindAnyObjectByType<GameObjectFactory>();
             if (factory == null || factory.gameObjectPrefab != itemSlotPrefab)
             {
@@ -74,7 +76,7 @@ namespace GMEngine
             factory.Setup(itemSlotPrefab, maxRow * maxColumn);
         }
 
-        private void FillInventoryUI(InventorySO inventory)
+        private void FillInventoryUI(InventoryController inventory)
         {
             itemSlots = transform.Find("ItemSlots");
 
@@ -86,29 +88,28 @@ namespace GMEngine
                 }
             }
 
-            foreach (var item in inventory.items)
+            foreach (var item in inventory.Items)
             {
                 AppendItemSlot(slotCount++, item);
             }
         }
 
-
-        public void AppendItemSlot(int number, BaseItemSO itemSO)
+        public void AppendItemSlot(int number, InventoryItem item)
         {
-            ItemSlot itemSlot = GetItemSlot(itemSO);
+            ItemSlot itemSlot = GetItemSlot(item);
             SetUpSlotPosition(itemSlot, number);
-            itemSlot.SetupItem(itemSO);
+            itemSlot.SetupItem(item);
         }
 
-        public void AppendItemSlot(BaseItemSO itemSO)
+        public void AppendItemSlot(InventoryItem item)
         {
-            int number = inventorySO.items.Count - 1;
-            ItemSlot itemSlot = GetItemSlot(itemSO);
+            int number = inventory.InventorySO.items.Count - 1;
+            ItemSlot itemSlot = GetItemSlot(item);
             SetUpSlotPosition(itemSlot, number);
-            itemSlot.SetupItem(itemSO);
+            itemSlot.SetupItem(item);
         }
 
-        private ItemSlot GetItemSlot(BaseItemSO itemSO)
+        private ItemSlot GetItemSlot(InventoryItem item)
         {
             ItemSlot itemSlot = factory.GetProduct(itemSlots).GetComponent<ItemSlot>();
             return itemSlot;
@@ -120,15 +121,15 @@ namespace GMEngine
             itemSlot.transform.localPosition = position;
         }
 
-        private void RemoveItemSlot(BaseItemSO itemSO, int index)
+        private void RemoveItemSlot(InventoryItem item, int index)
         {
-            Debug.Log($"Begin removing item {itemSO}");
+            Debug.Log($"Begin removing item {item.name}");
             foreach (Transform child in itemSlots)
             {
                 ItemSlot slot = child.GetComponent<ItemSlot>();
-                if (slot.itemSOSlot.gameObjectReference == itemSO.gameObjectReference)
+                if (slot.item.gameObject == item.gameObject)
                 {
-                    Debug.Log($"found item, now pooling, item is {slot.itemSOSlot.name}");
+                    Debug.Log($"found item, now pooling, item is {slot.item.name}");
                     factory.PoolProduct(slot.gameObject);
                     break;
                 }

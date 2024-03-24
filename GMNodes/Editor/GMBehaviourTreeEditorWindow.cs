@@ -125,7 +125,7 @@ namespace GMEngine.NodeGraph
             {
                 if (Selection.activeGameObject)
                 {
-                    GMBehaviourTreeRunner runner = Selection.activeGameObject.GetComponent<GMBehaviourTreeRunner>();
+                    GMBehaviourTreePositiveRunner runner = Selection.activeGameObject.GetComponent<GMBehaviourTreePositiveRunner>();
                     if (runner)
                     {
                         tree = runner.tree;

@@ -1,19 +1,20 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     public class ItemSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IPointerClickHandler, IDragHandler
     {
         [SerializeField]
         private Image spriteSlot;
-        public BaseItemSO itemSOSlot;
+        public InventoryItem item;
 
-        public void SetupItem(BaseItemSO itemSO)
+        public void SetupItem(InventoryItem item)
         {
-            Debug.Log($"Get {itemSO}, Setting up {name}");
-            itemSOSlot = itemSO;
+            this.item = item;
+            var itemSO = item.baseItemSO;
             SetupSprite(itemSO.sprite);
             SetupItemCount(itemSO);
         }
@@ -64,41 +65,36 @@ namespace GMEngine
                 }
             }
         }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             var controller = GetComponentInParent<InventoryUI>();
             if (eventData.button == PointerEventData.InputButton.Right)
             {
-                controller.CallItemMenu(eventData.position, this);
-            }
-            else
-            {
-                controller.itemMenu.gameObject.SetActive(false);
+                if(item.TryGetComponent(out ItemBehaviour behaviour))
+                {
+                    GlobalUIManager.SetupContextualMenu(behaviour.actionName, behaviour.evtDelegate);
+                }
+                GlobalUIManager.SetupContextualMenu("Equip", item.equipAction);
+                GlobalUIManager.SetupContextualMenu("Drop", item.dropAction);
+                GlobalUIManager.UseContextualMenu(eventData);
             }
         }
 
         private void ExchangeItemSlot(ItemSlot targetItemSlot)
         {
-            BaseItemSO temp = this.itemSOSlot;
-            this.SetupItem(targetItemSlot.itemSOSlot);
+            var temp = this.item;
+            this.SetupItem(targetItemSlot.item);
             targetItemSlot.SetupItem(temp);
         }
-
-        public void OnDisable()
-        {
-            //Reset();
-        }
-
-        
 
         public void FactoryReset()
         {
             Debug.Log($"Reseting {gameObject.name}");
             //spriteSlot = null;
             spriteSlot.sprite = null;
-            itemSOSlot = null;
+            item = null;
         }
-
     }
 }
 

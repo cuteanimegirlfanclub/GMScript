@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     public class ViewConeDetector : MonoBehaviour
     {
@@ -157,6 +157,11 @@ namespace GMEngine
 
             origin.y += height / 2;
             dest.y = origin.y;
+            if(obj = this.gameObject)
+            {
+                return false;
+            }
+
             if(Physics.Linecast(origin, dest, occulusionLayers))
             {
                 return false;

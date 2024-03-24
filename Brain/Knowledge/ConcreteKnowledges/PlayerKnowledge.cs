@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     public class PlayerKnowledge : MonoBehaviour, IKnowledge
     {
@@ -10,9 +10,12 @@ namespace GMEngine
         private List<Transform> knowledges = new List<Transform>();
 
         //represent the ground item that player could pick
-        public GameObject grabbleItem;
+        [SerializeField] private InventoryItem grabbleItem;
+        public InventoryItem GrabbleItem { get => grabbleItem; }
+
         //the Inventory UI selected item
-        public GameObject selectingItemGO;
+        [SerializeField] private InventoryItem selectingItem;
+        public InventoryItem SelectingItem { get => selectingItem; }
 
         public void AddToKnowledge(Transform transform)
         {
@@ -32,22 +35,14 @@ namespace GMEngine
         }
 
         //logic need to be improved
-        public void SetGrabbleItem(GameObject gameObject)
+        public void SetGrabbleItem(InventoryItem item)
         {
-            grabbleItem = gameObject;
-            Debug.Log("GrabbleItem Setted");
+            grabbleItem = item;
         }
 
-        public void SetSelectingItem(GameObject gameObject)
+        public void SetSelectingItem(InventoryItem item)
         {
-            selectingItemGO = gameObject;
-        }
-
-        public GameObject GetSelectingItem()
-        {
-            GameObject selected = selectingItemGO;
-            Debug.Log($"Geting Selecting Item of {selected.name}");
-            return selected;
+            selectingItem = item;
         }
 
         public bool CheckKnowledge()

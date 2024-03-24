@@ -18,7 +18,3 @@ namespace GMEngine.TransformExtension
 
 }
 
-namespace GMEngine.Editor.TransformExtension
-{
-}
-

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
 #if UNITY_EDITOR
     public class ItemSpawnerMono : MonoBehaviour

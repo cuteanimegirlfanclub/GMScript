@@ -5,7 +5,7 @@ using System;
 using GMEngine.Event;
 using Cysharp.Threading.Tasks;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     [CreateAssetMenu(menuName = "Scriptable Object/Level/Level Configure")]
     public class LevelConfigure : ScriptableObject

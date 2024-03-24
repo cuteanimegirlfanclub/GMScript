@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     public class ItemMenu : MonoBehaviour
     {
@@ -9,9 +9,8 @@ namespace GMEngine
         {
             if(itemSlot != null)
             {
-                var controller = GetComponentInParent<InventoryUI>();
-                controller.knowledge.SetSelectingItem(itemSlot.itemSOSlot.gameObjectReference);
-                controller.inventorySO.SetHandItem(itemSlot.itemSOSlot);
+                var controller = GameObject.FindGameObjectWithTag("MainChara").GetComponent<Brain>();
+                controller.EquipItem(itemSlot.item);
                 gameObject.SetActive(false);
             }
         }
@@ -20,9 +19,9 @@ namespace GMEngine
         {
             if (itemSlot != null)
             {
-                if(itemSlot.itemSOSlot is BareHandSO) { return; }
+                if(itemSlot.item.baseItemSO is BareHandSO) { return; }
                 Debug.Log("dropping item..");
-                GameObject.FindGameObjectWithTag("MainChara").GetComponent<Brain>().DropItem(itemSlot.itemSOSlot.gameObjectReference);
+                GameObject.FindGameObjectWithTag("MainChara").GetComponent<Brain>().DropItem(itemSlot.item, true);
                 gameObject.SetActive(false);
             }
 

@@ -1,7 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     public class ItemManager : Singleton<ItemManager>, ISaveDataRecevier
     {

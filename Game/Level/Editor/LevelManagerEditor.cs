@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using GMEngine.StringExtension;
 
 
-namespace GMEngine.Editor
+namespace GMEngine.Game
 {
     [CustomEditor(typeof(LevelManager))]
     public class LevelManagerEditor : UnityEditor.Editor

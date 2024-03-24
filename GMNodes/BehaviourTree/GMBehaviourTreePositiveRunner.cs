@@ -6,37 +6,26 @@ using Cysharp.Threading.Tasks;
 using GMEngine.Value;
 
 namespace GMEngine { 
-    public class GMBehaviourTreeRunner : MonoBehaviour
+    public class GMBehaviourTreePositiveRunner : MonoBehaviour
     {
         public GMBehaviourTree tree;
         public FloatReferenceRO updateFrequency;
         public BooleanReferenceRO updateOnStart;
+
         public void Awake()
         {
             tree = (GMBehaviourTree)tree.DeepCopy();
-            OnAwake();
         }
 
-        protected virtual void OnAwake()
-        {
-
-        }
-
-        public void Start()
-        {
-            UpdateTree().Forget();
-        }
-
-        private async UniTaskVoid UpdateTree()
+        private void Start()
         {
             if (updateOnStart.Value)
             {
                 StartUpdateTree().Forget();
             }
-
         }
 
-        private async UniTaskVoid StartUpdateTree()
+        public async UniTaskVoid StartUpdateTree()
         {
             while (tree.status == ProcessStatus.Running)
             {

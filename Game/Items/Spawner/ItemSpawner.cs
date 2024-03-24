@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     public class ItemSpawner : IDisposable
     {
@@ -14,8 +14,6 @@ namespace GMEngine
             itemPrefab = prefab;
             //itemGO = ItemManager.Instance.CreateItemAsync(prefab.name, position, rotaion).GetAwaiter().GetResult();
             itemGO = GameObject.Instantiate(itemPrefab,position, rotaion);
-
-            itemGO.GetComponentInChildren<PickableItem>().baseItemSO.gameObjectReference = itemGO;
         }
 
         public void Dispose()

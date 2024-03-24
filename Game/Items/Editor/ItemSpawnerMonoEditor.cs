@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     [CustomEditor(typeof(ItemSpawnerMono))]
     public class ItemSpawnerMonoEditor : UnityEditor.Editor

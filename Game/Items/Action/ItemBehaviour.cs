@@ -6,31 +6,45 @@ namespace GMEngine
 {
     public class ItemBehaviour : MonoBehaviour
     {
-        public InputAction action;
-        public UnityEvent unityEvent;
+        public InputAction input;
+        public UnityEvent _event;
+
+        public UnityAction evtDelegate;
+        public string actionName;
+
+        private void Awake()
+        {
+            evtDelegate += InvokEvt;
+        }
 
         private void OnEnable()
         {
-            action.Enable();
-            action.canceled += ActionHandler;
+            input.Enable();
+            input.canceled += ActionHandler;
+            
         }
 
         private void OnDisable()
         {
-            action.Disable();
-            action.canceled -= ActionHandler;
+            input.Disable();
+            input.canceled -= ActionHandler;
         }
 
         private void ActionHandler(InputAction.CallbackContext ctx)
         {
-            unityEvent.Invoke();
+            InvokEvt();
+        }
+
+        private void InvokEvt()
+        {
+            _event.Invoke();
         }
 
         private void OnValidate()
         {
-            if(action != null)
+            if(input != null)
             {
-                if(action.type != InputActionType.Button)
+                if(input.type != InputActionType.Button)
                 {
                     Debug.LogError("Item Behaviour Should Have Button Action Input!");
                 }

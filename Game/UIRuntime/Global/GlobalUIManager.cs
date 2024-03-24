@@ -4,18 +4,23 @@ using UnityEngine.InputSystem;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Cysharp.Threading.Tasks;
+using System;
+using UnityEngine.Events;
+using GMEngine.Game;
+using UnityEngine.EventSystems;
 
 namespace GMEngine
 {
     public class GlobalUIManager : Singleton<GlobalUIManager>
     {
-        [Header("Input")]
         private readonly string inputReferenceName = "PlayerControl[UIControl/OpenInventory]";
-        public InputActionReference openInventoryAction;
+        private InputActionReference openInventoryAction;
 
         private GameObject inventoryUIGO;
         private GameObject systemMessageBox;
         private GameObject loadingUI;
+
+        private GameObject globalContextualMenu;
 
         [SerializeField]
         private PrefabDatabase prefabDatabase;
@@ -29,6 +34,16 @@ namespace GMEngine
 
             await SetupGlobalUIController();
         }
+
+#if UNITY_EDITOR
+        public void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.P)) 
+            {
+                Debug.Break();
+            }
+        }
+#endif
 
         private void OnDisable()
         {
@@ -53,11 +68,13 @@ namespace GMEngine
 
         private void InstantiateGlobalUIElement()
         {
-            inventoryUIGO = Instantiate(prefabDatabase.GetPrefabAtIndex(0), transform);
+            Instance.inventoryUIGO = InstantiateUGUI(0);
 
-            systemMessageBox = Instantiate(prefabDatabase.GetPrefabAtIndex(1), transform);
+            Instance.systemMessageBox = Instantiate(prefabDatabase.GetPrefabAtIndex(1), transform);
 
-            loadingUI = Instantiate(prefabDatabase.GetPrefabAtIndex(2), transform);
+            Instance.loadingUI = Instantiate(prefabDatabase.GetPrefabAtIndex(2), transform);
+
+            Instance.globalContextualMenu = InstantiateUGUI(3);
         }
 
         private async UniTask SetupGlobalUIController()
@@ -78,17 +95,23 @@ namespace GMEngine
             openInventoryAction.action.Enable(); openInventoryAction.action.canceled += DisplayInventoryUI;
         }
         
-
-        public SuspendedConfirmationBox GetSystemBox()
+        public static GameObject InstantiateUGUI(int index)
         {
-            return systemMessageBox.GetComponent<SuspendedConfirmationBox>();
+            var go = Instantiate(Instance.prefabDatabase.GetPrefabAtIndex(index), Instance.transform);
+            Debug.Log($"Initiating {go.name}");
+            go.GetComponent<GMUgui>().Initiate();
+            return go;
         }
 
+        public static SuspendedConfirmationBox GetSystemBox()
+        {
+            return Instance.systemMessageBox.GetComponent<SuspendedConfirmationBox>();
+        }
 
-        public void SetLoadingUI(bool key)
+        public static void SetLoadingUI(bool key)
         {
             Debug.Log($"Seting Loading UI To {key}");
-            loadingUI.SetActive(key);
+            Instance.loadingUI.SetActive(key);
         }
 
         private void DisplayInventoryUI(InputAction.CallbackContext ctx)
@@ -96,22 +119,20 @@ namespace GMEngine
             inventoryUIGO.SetActive(!inventoryUIGO.activeSelf);
         }
 
-        //public void InstantiateInventoryUI()
-        //{
-        //    inventoryUIGO = Instantiate(Resources.Load("InventoryUI", typeof(GameObject)), transform) as GameObject;
-        //    var inventoryUI = inventoryUIGO.GetComponent<InventoryUI>();
-        //    inventoryUI.InitiateInventoryUI(inventoryUI.inventorySO);
-        //    inventoryUIGO.SetActive(false);
-        //}
+        public static void SetupContextualMenu(string actionName, UnityAction action)
+        {
+            GlobalContextualMenu menu = Instance.globalContextualMenu.GetComponent<GlobalContextualMenu>();
+            menu.AppendAction(actionName, action);
+        }
 
-        //public void InstantiateSystemUIBox()
-        //{
-        //    systemMessageBox = Instantiate(Resources.Load("SuspendMessageBox", typeof(GameObject)), transform) as GameObject;
-        //}
-        //private void InstantiateLoadingUI()
-        //{
-        //    loadingUI = Instantiate(Resources.Load("LoadingUI", typeof(GameObject)), transform) as GameObject;
-        //}
+        public static void UseContextualMenu(PointerEventData eventData)
+        {
+            GlobalContextualMenu menu = Instance.globalContextualMenu.GetComponent<GlobalContextualMenu>();
+            if (menu.gameObject.activeSelf) return;
+            if (!menu.isSetup) return;
+            menu.GetComponent<RectTransform>().position = eventData.position;
+            menu.gameObject.SetActive(true);
+        }
     }
 
 }

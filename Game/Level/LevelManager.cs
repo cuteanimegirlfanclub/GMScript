@@ -6,7 +6,7 @@ using Cysharp.Threading.Tasks;
 using GMEngine.StringExtension;
 using UnityEditor;
 
-namespace GMEngine
+namespace GMEngine.Game
 {
     public class LevelManager : MonoBehaviour
     {
@@ -31,12 +31,12 @@ namespace GMEngine
 
         public async void LoadSceneAsync(string sceneName)
         {
-            GlobalUIManager.Instance.SetLoadingUI(true);
+            GlobalUIManager.SetLoadingUI(true);
             await Addressables.LoadSceneAsync(sceneName);
             LevelConfigure configure = await Addressables.LoadAssetAsync<LevelConfigure>(sceneName.SceneToConfigure());
             this.configure = configure;
             await configure.SetupLevel(); 
-            GlobalUIManager.Instance.SetLoadingUI(false);
+            GlobalUIManager.SetLoadingUI(false);
         }
 
         public void LoadScene(string sceneName)
